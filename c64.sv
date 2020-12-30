@@ -25,6 +25,7 @@
 
 module emu
 (
+`ifndef CYCLONE	
 	//Master input clock
 	input         CLK_50M,
 
@@ -127,6 +128,62 @@ module emu
 	output  [6:0] USER_OUT,
 
 	input         OSD_STATUS
+`else
+	input         CLK_50M,
+	output        LED_USER,
+
+	output  [7:0] VGA_R,
+	output  [7:0] VGA_G,
+	output  [7:0] VGA_B,
+	output        VGA_HS,
+	output        VGA_VS,
+	output        VGA_CLOCK, //RELOADED
+	output        VGA_BLANK = 1'b1, //RELOADED
+	output        AUDSG_L,
+	output        AUDSG_R,
+
+	input         UART_RXD,
+	output        UART_TXD,
+	input         UART_CTS, //FICTICIO
+	output        UART_RTS, //FICTICIO
+	output        UART_DTR, //FICTICIO
+	input         UART_DSR, //FICTICIO
+
+	output        SD_SCK,
+	output        SD_MOSI,
+	input         SD_MISO,
+	output        SD_CS,
+
+	output        SDRAM_CLK,
+	output        SDRAM_CKE,
+	output [12:0] SDRAM_A,
+	output  [1:0] SDRAM_BA,
+	inout  [15:0] SDRAM_DQ,
+	output        SDRAM_DQML,
+	output        SDRAM_DQMH,
+	output        SDRAM_nCS,
+	output        SDRAM_nCAS,
+	output        SDRAM_nRAS,
+	output        SDRAM_nWE,
+	
+	inout         PS2_CLK,
+	inout         PS2_DAT,
+`ifndef JOYDC
+	output        JOY_CLK,
+	output        JOY_LOAD,
+	input         JOY_DATA,
+	output        JOY_SELECT,
+`else
+	input	wire [5:0]JOYSTICK1,
+	input	wire [5:0]JOYSTICK2,
+	output        JOY_SELECT = 1'b1,
+`endif	
+	output        MCLK,
+	output        SCLK,
+	output        LRCLK,
+	output        SDIN,
+	output        STM_RST = 1'b0
+`endif		
 );
 
 assign ADC_BUS  = 'Z;
@@ -140,7 +197,7 @@ assign {SD_SCK, SD_MOSI, SD_CS} = 'Z;
 
 assign LED_DISK = 0;
 assign LED_POWER = 0;
-assign LED_USER = c1541_1_led | c1541_2_led | ioctl_download | tape_led;
+assign LED_USER = ~ioctl_download; //c1541_1_led | c1541_2_led | ioctl_download | tape_led;
 assign BUTTONS   = 0;
 assign VGA_SCALER = 0;
 
@@ -198,6 +255,7 @@ wire clk_sys;
 wire clk64;
 wire clk48;
 
+`ifndef CYCLONE
 pll pll
 (
 	.refclk(CLK_50M),
@@ -272,6 +330,16 @@ always @(posedge CLK_50M) begin
 		endcase
 	end
 end
+`else
+pll pll
+(
+	.inclk0(CLK_50M),
+	.c0(clk48),
+	.c1(clk64),
+	.c2(clk_sys),	
+	.locked(pll_locked)
+);	
+`endif
 
 reg reset_n;
 always @(posedge clk_sys) begin
@@ -296,10 +364,17 @@ end
 
 
 wire [15:0] joyA,joyB,joyC,joyD;
+`ifdef JOYDC
+assign joyA[5:0] = ~JOYSTICK1[5:0];
+assign joyB[5:0] = ~JOYSTICK2[5:0];
+`endif
 
 wire [31:0] status;
+`ifndef CYCLONE
 wire        forced_scandoubler;
-
+`else
+wire        forced_scandoubler=!host_scandoubler; //Negado = VGA x defecto.
+`endif
 wire        ioctl_wr;
 wire [24:0] ioctl_addr;
 wire  [7:0] ioctl_data;
@@ -323,7 +398,7 @@ wire  [1:0] buttons;
 wire [21:0] gamma_bus;
 
 wire  [7:0] pd1,pd2,pd3,pd4;
-
+`ifndef CYCLONE
 hps_io #(.STRLEN($size(CONF_STR)>>3), .VDNUM(2)) hps_io
 (
 	.clk_sys(clk_sys),
@@ -370,6 +445,74 @@ hps_io #(.STRLEN($size(CONF_STR)>>3), .VDNUM(2)) hps_io
 	.ioctl_wait(ioctl_req_wr),
 	.uart_mode(16'b000_11111_000_11111)
 );
+`else
+wire [7:0]R_OSD,G_OSD,B_OSD;
+wire host_scandoubler;
+wire [7:0]R_IN = ~(hblank | vblank) ? r : 0;
+wire [7:0]G_IN = ~(hblank | vblank) ? g : 0;
+wire [7:0]B_IN = ~(hblank | vblank) ? b : 0;
+assign VGA_CLOCK = CLK_VIDEO;
+
+data_io data_io
+(
+	.clk(clk64),//clk_sys),
+	.CLOCK_50(CLK_50M), //Para modulos de I2s y Joystick
+	
+	.debug(),
+	
+	.reset_n(pll_locked),
+
+	.vga_hsync(~hsync),
+	.vga_vsync(~vsync),
+	
+	.red_i(r),//R_IN),
+	.green_i(g),//G_IN),
+	.blue_i(b),//B_IN),
+	.red_o(R_OSD),
+	.green_o(G_OSD),
+	.blue_o(B_OSD),
+	
+	.ps2k_clk_in(PS2_CLK),
+	.ps2k_dat_in(PS2_DAT),
+	.ps2_key(ps2_key),
+	.host_scandoubler_disable(host_scandoubler),
+	
+`ifndef JOYDC
+	.JOY_CLK(JOY_CLK),
+	.JOY_LOAD(JOY_LOAD),
+	.JOY_DATA(JOY_DATA),
+	.JOY_SELECT(JOY_SELECT),
+	.joy1(JoyA),
+	.joy2(JoyB),
+`endif
+	.dac_MCLK(MCLK),
+	.dac_LRCK(LRCLK),
+	.dac_SCLK(SCLK),
+	.dac_SDIN(SDIN),
+	.sigma_L(AUDSG_L),
+	.sigma_R(AUDSG_R),
+	.L_data(AUDIO_L),
+	.R_data(AUDIO_R),
+	
+	.spi_miso(SD_MISO),
+	.spi_mosi(SD_MOSI),
+	.spi_clk(SD_SCK),
+	.spi_cs(SD_CS),
+
+	.img_mounted(img_mounted),
+	.img_size(img_size),
+
+	.status(status),
+	
+	.ioctl_ce(clk_sys),
+	.ioctl_wr(ioctl_wr),
+	.ioctl_addr(ioctl_addr),
+	.ioctl_dout(ioctl_dout),
+	.ioctl_download(ioctl_download),
+	.ioctl_index(ioctl_index),
+	.ioctl_file_ext()
+);
+`endif
 
 wire game;
 wire exrom;
@@ -991,10 +1134,19 @@ video_mixer #(.GAMMA(1)) video_mixer
 	.hq2x(~status[10] & (status[9] ^ status[8])),
 	.scandoubler(scandoubler),
 	.gamma_bus(gamma_bus),
-
+`ifndef CYCLONE
 	.R(r),
 	.G(g),
 	.B(b),
+	.VGA_VS(VGA_VS),
+	.VGA_HS(VGA_HS),	
+`else
+	.R(R_OSD),
+	.G(G_OSD),
+	.B(B_OSD),
+	.VGA_VS(hsync_o),
+	.VGA_HS(vsync_o),	
+`endif
 	.mono(0),
 
 	.HSync(hsync_out),
@@ -1005,10 +1157,19 @@ video_mixer #(.GAMMA(1)) video_mixer
 	.VGA_R(VGA_R),
 	.VGA_G(VGA_G),
 	.VGA_B(VGA_B),
-	.VGA_VS(VGA_VS),
-	.VGA_HS(VGA_HS),
 	.VGA_DE(VGA_DE)
 );
+
+`ifdef CYCLONE
+reg hsync_o, vsync_o, csync_o, csync_en;
+
+csync csync_gen (.clk(CLK_VIDEO), .hsync(hsync_o), .vsync(vsync_o), .csync(csync_o));
+
+assign csync_en = !scandoubler;
+assign VGA_VS = csync_en ? 1'b1     : ~vsync_o;
+assign VGA_HS = csync_en ? ~csync_o : ~hsync_o;
+
+`endif
 
 wire        opl_en = status[12];
 wire [15:0] opl_out;
