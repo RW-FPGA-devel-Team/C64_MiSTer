@@ -1,43 +1,55 @@
-set_location_assignment PIN_T2 -to CLK_50M
+#Basic Global Defines
+set_global_assignment -name GENERATE_RBF_FILE ON
+set_global_assignment -name ON_CHIP_BITSTREAM_DECOMPRESSION OFF
 
+#Clock & LED
+set_location_assignment PIN_T2 -to CLK_50M
 set_location_assignment PIN_E4 -to LED_USER
 
 #SRAM
-set_location_assignment PIN_AB15 -to sram_addr[20]
-set_location_assignment PIN_U21 -to sram_addr[19]
-set_location_assignment PIN_A17 -to sram_addr[18]
-set_location_assignment PIN_B18 -to sram_addr[17]
-set_location_assignment PIN_A18 -to sram_addr[16]
-set_location_assignment PIN_A19 -to sram_addr[15]
-set_location_assignment PIN_A5 -to sram_addr[14]
-set_location_assignment PIN_A15 -to sram_addr[13]
-set_location_assignment PIN_B6 -to sram_addr[12]
-set_location_assignment PIN_A14 -to sram_addr[11]
-set_location_assignment PIN_A8 -to sram_addr[10]
-set_location_assignment PIN_B13 -to sram_addr[9]
-set_location_assignment PIN_B10 -to sram_addr[8]
-set_location_assignment PIN_B14 -to sram_addr[7]
-set_location_assignment PIN_B15 -to sram_addr[6]
-set_location_assignment PIN_B9 -to sram_addr[5]
-set_location_assignment PIN_A7 -to sram_addr[4]
-set_location_assignment PIN_A6 -to sram_addr[3]
-set_location_assignment PIN_B5 -to sram_addr[2]
-set_location_assignment PIN_C3 -to sram_addr[1]
-set_location_assignment PIN_A4 -to sram_addr[0]
-                        
-set_location_assignment PIN_B17 -to sram_data[7]
-set_location_assignment PIN_A16 -to sram_data[6]
-set_location_assignment PIN_B16 -to sram_data[5]
-set_location_assignment PIN_C4 -to sram_data[4]
-set_location_assignment PIN_A9 -to sram_data[3]
-set_location_assignment PIN_B8 -to sram_data[2]
-set_location_assignment PIN_A13 -to sram_data[1]
-set_location_assignment PIN_B7 -to sram_data[0]
+set_location_assignment PIN_AB15 -to SRAM_ADDR[20]
+set_location_assignment PIN_U21 -to SRAM_ADDR[19]
+set_location_assignment PIN_A17 -to SRAM_ADDR[18]
+set_location_assignment PIN_B18 -to SRAM_ADDR[17]
+set_location_assignment PIN_A18 -to SRAM_ADDR[16]
+set_location_assignment PIN_A19 -to SRAM_ADDR[15]
+set_location_assignment PIN_A5 -to SRAM_ADDR[14]
+set_location_assignment PIN_A15 -to SRAM_ADDR[13]
+set_location_assignment PIN_B6 -to SRAM_ADDR[12]
+set_location_assignment PIN_A14 -to SRAM_ADDR[11]
+set_location_assignment PIN_A8 -to SRAM_ADDR[10]
+set_location_assignment PIN_B13 -to SRAM_ADDR[9]
+set_location_assignment PIN_B10 -to SRAM_ADDR[8]
+set_location_assignment PIN_B14 -to SRAM_ADDR[7]
+set_location_assignment PIN_B15 -to SRAM_ADDR[6]
+set_location_assignment PIN_B9 -to SRAM_ADDR[5]
+set_location_assignment PIN_A7 -to SRAM_ADDR[4]
+set_location_assignment PIN_A6 -to SRAM_ADDR[3]
+set_location_assignment PIN_B5 -to SRAM_ADDR[2]
+set_location_assignment PIN_C3 -to SRAM_ADDR[1]
+set_location_assignment PIN_A4 -to SRAM_ADDR[0]
 
-set_location_assignment PIN_A10 -to sram_we_n
-set_location_assignment PIN_AA20 -to sram_oe_n
-set_location_assignment PIN_AA16 -to sram_lb_n
-set_location_assignment PIN_R2 -to sram_ub_n
+set_location_assignment PIN_F21 -to SRAM_DATA[15]
+set_location_assignment PIN_J22 -to SRAM_DATA[14]
+set_location_assignment PIN_L21 -to SRAM_DATA[13]
+set_location_assignment PIN_M22 -to SRAM_DATA[12]
+set_location_assignment PIN_L22 -to SRAM_DATA[11]
+set_location_assignment PIN_H22 -to SRAM_DATA[10]
+set_location_assignment PIN_H21 -to SRAM_DATA[9]
+set_location_assignment PIN_F22 -to SRAM_DATA[8]                        
+set_location_assignment PIN_B17 -to SRAM_DATA[7]
+set_location_assignment PIN_A16 -to SRAM_DATA[6]
+set_location_assignment PIN_B16 -to SRAM_DATA[5]
+set_location_assignment PIN_C4 -to SRAM_DATA[4]
+set_location_assignment PIN_A9 -to SRAM_DATA[3]
+set_location_assignment PIN_B8 -to SRAM_DATA[2]
+set_location_assignment PIN_A13 -to SRAM_DATA[1]
+set_location_assignment PIN_B7 -to SRAM_DATA[0]
+
+set_location_assignment PIN_A10 -to SRAM_WE_N
+set_location_assignment PIN_AA20 -to SRAM_OE_N
+set_location_assignment PIN_AA16 -to SRAM_LB_N
+set_location_assignment PIN_R2 -to SRAM_UB_N
 
 #SD
 set_location_assignment PIN_E22 -to SD_SCK
@@ -141,8 +153,6 @@ set_location_assignment PIN_B20 -to JOY_LOAD
 set_location_assignment PIN_B19 -to JOY_DATA
 set_location_assignment PIN_AA18 -to JOY_SELECT
 
-#I2s
-set_location_assignment PIN_H21 -to SCLK
-set_location_assignment PIN_H22 -to SDIN
-set_location_assignment PIN_F22 -to MCLK
-set_location_assignment PIN_L22 -to LRCLK
+set_location_assignment PIN_M20 -to SCLK
+set_location_assignment PIN_AB14 -to LRCLK
+set_location_assignment PIN_AA15 -to SDIN
