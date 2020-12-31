@@ -174,10 +174,16 @@ module emu
 	input         JOY_DATA,
 	output        JOY_SELECT,
 `else
-	input	wire [5:0]JOYSTICK1,
-	input	wire [5:0]JOYSTICK2,
+	input	     [5:0]JOYSTICK1,
+	input      [5:0]JOYSTICK2,
 	output        JOY_SELECT = 1'b1,
-`endif	
+`endif
+	output      [20:0]SRAM_ADDR,
+	inout       [7:0]SRAM_DATA,
+	output    	SRAM_WE_N,
+	output    	SRAM_OE_N, //Neptuno
+	output   	SRAM_LB_N, //Neptuno
+	output      SRAM_UB_N, //Neptuno	
 	output        MCLK,
 	output        SCLK,
 	output        LRCLK,
@@ -465,9 +471,9 @@ data_io data_io
 	.vga_hsync(~hsync),
 	.vga_vsync(~vsync),
 	
-	.red_i(r),//R_IN),
-	.green_i(g),//G_IN),
-	.blue_i(b),//B_IN),
+	.red_i(R_IN),
+	.green_i(G_IN),
+	.blue_i(B_IN),
 	.red_o(R_OSD),
 	.green_o(G_OSD),
 	.blue_o(B_OSD),
@@ -1167,7 +1173,7 @@ csync csync_gen (.clk(CLK_VIDEO), .hsync(hsync_o), .vsync(vsync_o), .csync(csync
 
 assign csync_en = !scandoubler;
 assign VGA_VS = csync_en ? 1'b1     : ~vsync_o;
-assign VGA_HS = csync_en ? ~csync_o : ~hsync_o;
+assign VGA_HS = csync_en ? ~csync_o : ~hsync_o; //~ en el orignal de Mister van Negadas
 
 `endif
 
@@ -1327,4 +1333,38 @@ c1530 c1530
 	.dout(cass_do)
 );
 
+`ifdef CYCLONE
+/// CAMBIOS
+wire dsk_wr;
+wire [19:0] disk_addr_s;
+wire [7:0] disk_data_s;
+wire dsk_download  = (ioctl_index == 8'h01) ? 1'b1 : 1'b0;
+assign SRAM_ADDR   = (dsk_download) ? ioctl_addr[19:0] : disk_addr_s; 
+assign SRAM_DATA   = (dsk_download) ? ioctl_dout 	: 8'bzzzzzzzz;
+assign disk_data_s = SRAM_DATA;
+assign SRAM_WE_N   = ~(dsk_download & ioctl_wr);
+assign SRAM_OE_N   = 1'b0;
+assign SRAM_LB_N   = 1'b0;
+assign SRAM_UB_N   = 1'b1;
+
+image_controller image_controller1
+(
+    
+		.clk_i			( ce_c1541 ),
+		.reset_i		   ( ~reset_n ),
+ 	 
+		.sd_lba			( sd_lba ), 
+		.sd_rd			( sd_rd ),
+		.sd_wr			( sd_wr ),
+
+		.sd_ack			( sd_ack ),
+		.sd_buff_addr	( sd_buff_addr ), 
+		.sd_buff_dout	( sd_buff_dout ), 
+		.sd_buff_din	( sd_buff_din ),
+		.sd_buff_wr		( sd_buff_wr ),
+		
+		.sram_addr_o  	( disk_addr_s ),
+		.sram_data_i   ( disk_data_s )
+);
+`endif
 endmodule

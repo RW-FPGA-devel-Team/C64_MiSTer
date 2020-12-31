@@ -16,4 +16,5 @@ set_global_assignment -name VHDL_FILE          ../CtrlModule/modules/audio_i2s.v
 set_global_assignment -name VERILOG_FILE       ../CtrlModule/modules/sigma_delta_dac.v
 set_global_assignment -name VERILOG_FILE       ../CtrlModule/modules/joydecoder_neptuno.v
 set_global_assignment -name VERILOG_FILE       ../CtrlModule/modules/csync.v
+set_global_assignment -name SYSTEMVERILOG_FILE ../CtrlModule/modules/image_controller.sv
 

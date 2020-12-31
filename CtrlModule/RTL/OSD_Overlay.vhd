@@ -42,10 +42,10 @@ begin
 		if rising_edge(clk) then --
 			window_out<=window_in;
 			
-			if osd_window_in='1' then --Modifico el OSD sin trasparencia para que se vea en sistemas monocromos.
-				red_out<=osd_pixel_in&osd_pixel_in&osd_pixel_in&osd_pixel_in&osd_pixel_in&osd_pixel_in&osd_pixel_in&osd_pixel_in;--red_in(7 downto 2);
-				green_out<=(others=>'0');--osd_pixel_in&osd_pixel_in&"111111";--green_in(7 downto 2);
-				blue_out<=(others=>'0'); --osd_pixel_in&osd_pixel_in&"111111";--blue_in(7 downto 2);
+			if osd_window_in='1' then
+				red_out<=osd_pixel_in&osd_pixel_in&red_in(7 downto 2);
+				green_out<=osd_pixel_in&'1'&green_in(7 downto 2);
+				blue_out<=osd_pixel_in&osd_pixel_in&blue_in(7 downto 2);
 			elsif scanline='1' and scanline_ena='1' then
 				red_out<='0'&red_in(7 downto 1);
 				green_out<='0'&green_in(7 downto 1);

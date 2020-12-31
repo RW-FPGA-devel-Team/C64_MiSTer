@@ -149,6 +149,9 @@ signal host_bootdata_ack   : std_logic :='0';
 signal		host_divert_sdcard : std_logic;
 signal		host_divert_keyboard :std_logic;
 signal		host_reset     : std_logic;
+signal		host_play      : std_logic;
+signal		host_rstcrt    : std_logic;
+signal		host_unloadtap : std_logic;
 signal		host_video     : std_logic;
 signal		host_video_d   : std_logic;
 signal		host_loadrom   : std_logic := '0';		
@@ -435,9 +438,10 @@ begin
 							host_loadrom<=mem_write(3);
 							host_video<=mem_write(4);
 							host_loadmed<=mem_write(5);
-							--host_xxx  <=mem_write(6);
-							--host_xxx  <=mem_write(7);
-
+							host_play<=mem_write(6);
+							host_rstcrt<=mem_write(7);
+							host_unloadtap<=mem_write(7);
+							
 						--when X"F0" => -- Scale Red
 						--	mem_busy<='0';
 						--	scalered<=unsigned(mem_write(4 downto 0));
@@ -614,31 +618,24 @@ end process;
 ioctl_file_ext(31 DOWNTO 0) <=  extension; --X"2E444154";
 img_size <= x"00000000" & size; 
 --img_size <= x"00000000" & x"0002F900";
+img_readonly<=dipswitches(30);
+status(0)<=host_rstcrt;
+status(1)<=not dipswitches(1); --UART Por defecto, al reves que en la mister 
+status(6 downto 2)<=dipswitches(6 downto 2);
+status(7)<=host_play;
+status(16 downto 8)<=dipswitches(16 downto 8);
+status(17)<=host_reset;
+status(22 downto 18)<=dipswitches(22 downto 18);
+status(23)<=host_unloadtap;
+status(31 downto 24)<=dipswitches(31 downto 24);
 
-status(0)<=host_reset;
-status(31 downto 1)<=dipswitches(31 downto 1);
---status(13 downto 12)<=dipswitches(31 downto 30);
---status(31 downto 14) <= (others => '0');
+debug <= '1';
 
---status(2 downto 1)<=dipswitches(3 downto 2); --st_joy1
---status(4 downto 3)<=dipswitches(5 downto 4); --st_joy2
---status(5)<='0';
---status(6)<=dipswitches(15); --st_fasttape
---status(7)<='0';
---status(9  downto  8) <= dipswitches(11 downto 10); --st_video_ULA
---status(12 downto 10) <= dipswitches(14 downto 12); --st_memory "100" Plus3
---status(14 downto 13) <= dipswitches(9) & dipswitches(9); --st_feat Recortado 00 = ULA+ & TIMEX 11=Desactivado
---status(16 downto 15) <= dipswitches( 1 downto  0);  --st_scanlines
---status(18 downto 17) <= dipswitches( 7 downto  6);  --st_mmc
---status(19)<='0';
---status(21 downto 20) <= '1' & dipswitches(8);  --st_gsnd Recortado 11 = Off / 10 = GS_2MB
---status(31 downto 22) <= (others => '0');
-
-debug <= '1' when ioctl_index = X"04" else '0';
-
-ioctl_index <= X"00" when host_loadrom = '1' else
-               X"01" when extension(23 downto 0)  = x"4F2020" else --Tape .o
-				   X"41" when extension(23 downto 0)  = x"502020" else --Tape .p
+ioctl_index <= X"00" when extension(23 downto 0)  = x"524F4D" else --host_loadrom = '1' else --ROM
+					X"01" when extension(23 downto 0)  = x"443634" else --D64
+               X"04" when extension(23 downto 0)  = x"505247" else --PRG
+               X"05" when extension(23 downto 0)  = x"435254" else --CRT
+               X"06" when extension(23 downto 0)  = x"544150" else --TAP
 					X"FF";
 					
 --ioctl_start_addr <= --x"150000" when host_loadrom = '1' else
@@ -657,7 +654,7 @@ if rising_edge(clk) then
  host_loadrom_d <= host_loadrom;
  host_loadmed_d <= host_loadmed;
  --Montamos con "10" porque el "01" esta reservado para montar el ESXDOS
- if ( host_loadmed = '1' and ioctl_index(3 downto 0) = x"1" ) then img_mounted <= "10"; else img_mounted <= "00"; end if;
+ if ( host_loadmed = '1' and ioctl_index(3 downto 0) = x"1" ) then img_mounted <= "01"; else img_mounted <= "00"; end if;
  if ( (host_loadmed = '0' and host_loadmed_d = '1') or (host_loadrom = '0' and host_loadrom_d = '1') ) then reset_address <= '1'; else reset_address <= '0'; end if;
 end if;
 end process;
