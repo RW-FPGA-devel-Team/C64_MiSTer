@@ -203,7 +203,7 @@ assign {SD_SCK, SD_MOSI, SD_CS} = 'Z;
 
 assign LED_DISK = 0;
 assign LED_POWER = 0;
-assign LED_USER = ~ioctl_download; //c1541_1_led | c1541_2_led | ioctl_download | tape_led;
+assign LED_USER = ~c1541_1_led; //dsk_download;//ioctl_download; //c1541_1_led | c1541_2_led | ioctl_download | tape_led;
 assign BUTTONS   = 0;
 assign VGA_SCALER = 0;
 
@@ -461,7 +461,7 @@ assign VGA_CLOCK = CLK_VIDEO;
 
 data_io data_io
 (
-	.clk(clk64),//clk_sys),
+	.clk(clk_sys),
 	.CLOCK_50(CLK_50M), //Para modulos de I2s y Joystick
 	
 	.debug(),
@@ -505,15 +505,15 @@ data_io data_io
 	.spi_clk(SD_SCK),
 	.spi_cs(SD_CS),
 
-	.img_mounted(img_mounted),
-	.img_size(img_size),
+	.img_mounted(sd_change),
+	.img_size(),
 
 	.status(status),
 	
-	.ioctl_ce(clk_sys),
+	.ioctl_ce(~ioctl_req_wr),
 	.ioctl_wr(ioctl_wr),
 	.ioctl_addr(ioctl_addr),
-	.ioctl_dout(ioctl_dout),
+	.ioctl_dout(ioctl_data),
 	.ioctl_download(ioctl_download),
 	.ioctl_index(ioctl_index),
 	.ioctl_file_ext()
@@ -1150,8 +1150,8 @@ video_mixer #(.GAMMA(1)) video_mixer
 	.R(R_OSD),
 	.G(G_OSD),
 	.B(B_OSD),
-	.VGA_VS(hsync_o),
-	.VGA_HS(vsync_o),	
+	.VGA_VS(vsync_o),
+	.VGA_HS(hsync_o),	
 `endif
 	.mono(0),
 
@@ -1338,9 +1338,9 @@ c1530 c1530
 wire dsk_wr;
 wire [19:0] disk_addr_s;
 wire [7:0] disk_data_s;
-wire dsk_download  = (ioctl_index == 8'h01) ? 1'b1 : 1'b0;
+wire dsk_download  = ioctl_download && (ioctl_index == 8'h01) ? 1'b1 : 1'b0;
 assign SRAM_ADDR   = (dsk_download) ? ioctl_addr[19:0] : disk_addr_s; 
-assign SRAM_DATA   = (dsk_download) ? ioctl_dout 	: 8'bzzzzzzzz;
+assign SRAM_DATA   = (dsk_download) ? ioctl_data	: 8'bzzzzzzzz;
 assign disk_data_s = SRAM_DATA;
 assign SRAM_WE_N   = ~(dsk_download & ioctl_wr);
 assign SRAM_OE_N   = 1'b0;
@@ -1350,17 +1350,17 @@ assign SRAM_UB_N   = 1'b1;
 image_controller image_controller1
 (
     
-		.clk_i			( ce_c1541 ),
+		.clk_i			( clk_sys ),
 		.reset_i		   ( ~reset_n ),
  	 
-		.sd_lba			( sd_lba ), 
+		.sd_lba			( sd_lba1 ), //c1541_1_busy ? sd_lba1 : sd_lba2 ), 
 		.sd_rd			( sd_rd ),
 		.sd_wr			( sd_wr ),
 
 		.sd_ack			( sd_ack ),
 		.sd_buff_addr	( sd_buff_addr ), 
 		.sd_buff_dout	( sd_buff_dout ), 
-		.sd_buff_din	( sd_buff_din ),
+		.sd_buff_din	( sd_buff_din1 ), //c1541_1_busy ? sd_buff_din1 : sd_buff_din2 ),
 		.sd_buff_wr		( sd_buff_wr ),
 		
 		.sram_addr_o  	( disk_addr_s ),

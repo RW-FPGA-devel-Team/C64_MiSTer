@@ -57,6 +57,31 @@ void Reset(int row)
 	HW_HOST(REG_HOST_CONTROL)=HOST_CONTROL_RESET|HOST_CONTROL_DIVERT_KEYBOARD; // Reset host core
 	Delay();
 	HW_HOST(REG_HOST_CONTROL)=HOST_CONTROL_DIVERT_KEYBOARD;
+	Menu_Hide();
+}
+
+void ResetCrt(int row)
+{
+	HW_HOST(REG_HOST_CONTROL)=HOST_CONTROL_RSTCRT|HOST_CONTROL_DIVERT_KEYBOARD; // Reset host core
+	Delay();
+	HW_HOST(REG_HOST_CONTROL)=HOST_CONTROL_DIVERT_KEYBOARD;
+	Menu_Hide();
+}
+
+void Play(int row)
+{
+	HW_HOST(REG_HOST_CONTROL)=HOST_CONTROL_PLAY|HOST_CONTROL_DIVERT_KEYBOARD;
+	Delay();
+	HW_HOST(REG_HOST_CONTROL)=HOST_CONTROL_DIVERT_KEYBOARD;
+	Menu_Hide();
+}
+
+void UnloadTap(int row)
+{
+	HW_HOST(REG_HOST_CONTROL)=HOST_CONTROL_UNLOADTAP|HOST_CONTROL_DIVERT_KEYBOARD;
+	Delay();
+	HW_HOST(REG_HOST_CONTROL)=HOST_CONTROL_DIVERT_KEYBOARD;
+	Menu_Hide();
 }
 
 void Video(int row)
@@ -89,124 +114,176 @@ static char *testpattern_labels[]=
 	"Test pattern 4"
 };
 */
-/*
-static char *st_aspect[]=
-{
-	"Modo 4:3",
-	"Modo 16:9"
-};
-*/
-static char *st_video[]=
-{
-	"Video Freq 50Hz",
-	"Video Freq 60Hz",
-	"Pentagon"
-};
-
-static char *st_inv[]=
-{
-	"Video Inveso Off",
-	"Video Inveso On"
-};
-
-static char *st_border[]=
-{
-	"Borde Negro Off",
-	"Borde Negro On"
-};
 
 static char *st_scanlines[]=
 {
-	"Scanlines None",
-	"Scanlines CRT 25%",
-	"Scanlines CRT 50%",
-	"Scanlines CRT 75%"
+	"Scandoubler Ninguno",
+	"Scandoubler HQ2x-320",
+	"Scandoubler HQ2x-160",
+	"Scandoubler CRT 25%",
+	"Scandoubler CRT 50%",
+	"Scandoubler CRT 75%"
 };
-/*
-static char *st_mix[]=
+
+static char *st_video[]=
+{
+	"Video PAL",
+	"Video NTSC"
+};
+
+static char *st_videofrm[]=
+{
+	"Aspecto Original",
+	"Aspecto Ancho"
+};
+
+static char *st_videoar[]=
+{
+	"Formato Original",
+	"Formato Pantalla Completa",
+	"Formato [ARC1]",
+	"Formato [ARC2]"
+};
+
+static char *st_sid_l[]=
+{
+	"SID Izquierdo 6581",
+	"SID Izquierdo 8580"
+};
+
+static char *st_sid_r[]=
+{
+	"SID Derecho 6581",
+	"SID Derecho 8580"
+};
+
+static char *st_sid_addr[]=
+{
+	"SID Derecho Addr Igual",
+	"SID Derecho Addr DE00",
+	"SID Derecho Addr D420",
+	"SID Derecho Addr D500",
+	"SID Derecho Addr DF00"
+};
+
+static char *st_filter[]=
+{
+	"Filtro de Audio On",
+	"Filtro de Audio Off"
+};
+
+
+static char *st_sndexp[]=
+{
+	"Expansion de Sonido No",
+	"Expansion de Sonido OPL2"
+};
+
+static char *st_stereomix[]=
 {
 	"Mezcla Stereo No",
 	"Mezcla Stereo 25%",
 	"Mezcla Stereo 50%",
-	"Mezcla Stereo 100%"
-};
-*/
-static char *st_model[]=
-{
-	"ZX81",
-	"ZX80"
+	"Mezcla Stereo 75%"
 };
 
-static char *st_speed[]=
+static char *st_joys[]=
 {
-	"Velocidad Original",
-	"Velocidad NoWait",
-	"Velocidad x2",
-	"Velocidad x8"
+	"Joysticks Normal",
+	"Joysticks Intercambiados"
 };
 
-static char *st_ram[]=
+static char *st_tapsnd[]=
 {
-	"RAM Principal 16KB",
-	"RAM Principal 32KB",
-	"RAM Principal 48KB",
-	"RAM Principal 1KB"
+	"Sonido Cinta Off",
+	"Sonido Cinta On"
 };
 
-static char *st_lowram[]=
+static char *st_fdwr[]=
 {
-	"RAM Baja Off",
-	"RAM Baja 8KB",
+	"Disco Grabable",
+	"Disco Solo Lectura"
 };
 
-static char *st_chr128[]=
+static char *st_port[]=
 {
-	"CHR$128/UDG 128 Chars",
-	"CHR$128/UDG 64 Chars",
-	"CHR$128/UDG Desactivado",
+	"Puerto UART",
+	"Puerto Joysticks"
 };
 
-static char *st_chr[]=
+static char *st_pot1[]=
 {
-	"QS CHRS Activado(F1)",
-	"QS CHRS Desactivado",
+	"Pot 1&2 Joy 1 Disparo 2/3",
+	"Pot 1&2 Raton",
+	"Pot 1&2 Paddles 1&2"
 };
 
-static char *st_chroma[]=
+static char *st_pot2[]=
 {
-	"Chroma81 Desactivado",
-	"Chroma81 Activado"
+	"Pot 3&4 Joy 2 Disparo 2/3",
+	"Pot 3&4 Raton",
+	"Pot 3&4 Paddles 3&4"
 };
 
-static char *st_joy[]=
+static char *st_kernel[]=
 {
-	"Joystick Cursor",
-	"Joystick Sinclair",
-	"Joystick ZX81"
+	"Kernel Cargable",
+	"Kernel C64",
+	"Kernel C64GS"
 };
+
+// Video submenu
+static struct menu_entry vidmenu[]=
+{
+	{MENU_ENTRY_CYCLE,(char *)st_video,MENU_ACTION(2)},	
+	{MENU_ENTRY_CYCLE,(char *)st_videofrm,MENU_ACTION(2)},	
+	{MENU_ENTRY_CYCLE,(char *)st_videoar,MENU_ACTION(4)},	
+	{MENU_ENTRY_CYCLE,(char *)st_scanlines,MENU_ACTION(6)},	
+	{MENU_ENTRY_SUBMENU,"Exit",MENU_ACTION(topmenu)},
+	{MENU_ENTRY_NULL,0,0}
+};
+
+static struct menu_entry audmenu[]=
+{
+	{MENU_ENTRY_CYCLE,(char *)st_sid_l,MENU_ACTION(2)},	
+	{MENU_ENTRY_CYCLE,(char *)st_sid_r,MENU_ACTION(2)},	
+	{MENU_ENTRY_CYCLE,(char *)st_sid_addr,MENU_ACTION(5)},
+	{MENU_ENTRY_CYCLE,(char *)st_filter,MENU_ACTION(2)},
+	{MENU_ENTRY_CYCLE,(char *)st_sndexp,MENU_ACTION(2)},
+	{MENU_ENTRY_CYCLE,(char *)st_stereomix,MENU_ACTION(4)},
+	{MENU_ENTRY_SUBMENU,"Exit",MENU_ACTION(topmenu)},
+	{MENU_ENTRY_NULL,0,0}
+};
+
+static struct menu_entry prtmenu[]=
+{
+	{MENU_ENTRY_CYCLE,(char *)st_joys,MENU_ACTION(2)},	
+	{MENU_ENTRY_CYCLE,(char *)st_port,MENU_ACTION(2)},	
+	{MENU_ENTRY_CYCLE,(char *)st_pot1,MENU_ACTION(3)},
+	{MENU_ENTRY_CYCLE,(char *)st_pot2,MENU_ACTION(3)},
+	{MENU_ENTRY_SUBMENU,"Exit",MENU_ACTION(topmenu)},
+	{MENU_ENTRY_NULL,0,0}
+};
+
 
 // Our toplevel menu
 static struct menu_entry topmenu[]=
 {
 //      NUMERO MAXIMO DE LINEAS EN MENU SON 16 (PARA MAS HACER SUBMENUS)
-//	{MENU_ENTRY_CALLBACK,"     =ZX81=     ",0},
-//	{MENU_ENTRY_CALLBACK,"                ",0},
-	{MENU_ENTRY_CALLBACK,"Reset",MENU_ACTION(&Reset)},
-//	{MENU_ENTRY_CYCLE,(char *)st_aspect,MENU_ACTION(2)}, 
-	{MENU_ENTRY_CYCLE,(char *)st_video,MENU_ACTION(2)}, 
-	{MENU_ENTRY_CYCLE,(char *)st_inv,MENU_ACTION(2)},
-	{MENU_ENTRY_CYCLE,(char *)st_border,MENU_ACTION(2)},
-	{MENU_ENTRY_CYCLE,(char *)st_scanlines,MENU_ACTION(4)}, 
-//	{MENU_ENTRY_CYCLE,(char *)st_mix,MENU_ACTION(4)}, 
-	{MENU_ENTRY_CYCLE,(char *)st_model,MENU_ACTION(2)},
-	{MENU_ENTRY_CYCLE,(char *)st_speed,MENU_ACTION(4)}, 
-	{MENU_ENTRY_CYCLE,(char *)st_ram,MENU_ACTION(4)}, 
-	{MENU_ENTRY_CYCLE,(char *)st_lowram,MENU_ACTION(2)}, 
-	{MENU_ENTRY_CYCLE,(char *)st_chr128,MENU_ACTION(3)},
-	{MENU_ENTRY_CYCLE,(char *)st_chr,MENU_ACTION(2)},
-	{MENU_ENTRY_CYCLE,(char *)st_chroma,MENU_ACTION(2)},
-	{MENU_ENTRY_CYCLE,(char *)st_joy,MENU_ACTION(3)},
-	{MENU_ENTRY_CALLBACK,"Cargar Medio \x10",MENU_ACTION(&FileSelector_Show)},
+	{MENU_ENTRY_CALLBACK,"   =COMODORE 64=   ",0},
+	{MENU_ENTRY_CALLBACK,"   by NeuroRulez   ",0},
+	{MENU_ENTRY_CALLBACK,"                   ",0},
+	{MENU_ENTRY_CALLBACK,"Reset",MENU_ACTION(&Reset)},	
+	{MENU_ENTRY_CALLBACK,"Reset & Soltar Cartucho",MENU_ACTION(&ResetCrt)},
+	{MENU_ENTRY_SUBMENU,"Video \x10",MENU_ACTION(vidmenu)},
+	{MENU_ENTRY_SUBMENU,"Audio \x10",MENU_ACTION(audmenu)},
+	{MENU_ENTRY_SUBMENU,"Puertos \x10",MENU_ACTION(prtmenu)},
+	{MENU_ENTRY_CYCLE,(char *)st_kernel,MENU_ACTION(3)},
+	{MENU_ENTRY_CYCLE,(char *)st_tapsnd,MENU_ACTION(2)},
+	{MENU_ENTRY_CYCLE,(char *)st_fdwr,MENU_ACTION(2)},
+	{MENU_ENTRY_CALLBACK,"Sacar Cinta",MENU_ACTION(&UnloadTap)},
+	{MENU_ENTRY_CALLBACK,"Play/Stop Cinta",MENU_ACTION(&Play)},
+	{MENU_ENTRY_CALLBACK,"Cargar Disco/Cinta/Cart \x10",MENU_ACTION(&FileSelector_Show)},
 	{MENU_ENTRY_CALLBACK,"Exit",MENU_ACTION(&Menu_Hide)},
 	{MENU_ENTRY_NULL,0,0}
 };
@@ -225,7 +302,6 @@ static int LoadMED(const char *filename)
 {
 	int result=0;
 	int opened;
-		HW_HOST(REG_HOST_CONTROL)=HOST_CONTROL_LOADMED|HOST_CONTROL_DIVERT_SDCARD;
 
 	if((opened=FileOpen(&file,filename)))
 	{
@@ -235,6 +311,7 @@ static int LoadMED(const char *filename)
 
 		HW_HOST(REG_HOST_ROMSIZE) = file.size;
 		HW_HOST(REG_HOST_ROMEXT) = ((char)filename[10])+((char)filename[9]<<8)+((char)filename[8]<<16); //Pasa 24 Bits las 3 letras de la Extension en el registro de 31 bits (la primera en los bits 23:16 la segunda  en 15:7 y la tercera en 7:0	
+		HW_HOST(REG_HOST_CONTROL)=HOST_CONTROL_LOADMED|HOST_CONTROL_DIVERT_SDCARD;
 
 		bits=0;
 		c=filesize-1;
@@ -379,7 +456,7 @@ int main(int argc,char **argv)
 		return(0);
 
 	//OSD_Puts("Loading initial ROM...\n");
-	LoadROM("ZX81    DAT");
+	//LoadROM("C64     DAT");
 	FileSelector_SetLoadFunction(LoadMED);
 	Menu_Set(topmenu);
 	Menu_Hide();//oculta el menu por defecto al cargar el core.
@@ -392,21 +469,29 @@ int main(int argc,char **argv)
 		HandlePS2RawCodes();
 		visible=Menu_Run();
 		dipsw = 0;
-		//Posicion 3 del menu, 0x3 = 2 bits max, <<9 = dips[1:0]	
-		//dipsw |= (MENU_CYCLE_VALUE(&topmenu[1])  & 0x1) << 1;  //[1] 
-		dipsw |= (MENU_CYCLE_VALUE(&topmenu[1])  & 0x1) << 6;  //[6]
-		dipsw |= (MENU_CYCLE_VALUE(&topmenu[2])  & 0x1) << 7;  //[7]
-		dipsw |= (MENU_CYCLE_VALUE(&topmenu[3])  & 0x1) << 5;  //[5]
-		dipsw |= (MENU_CYCLE_VALUE(&topmenu[4])  & 0x3) << 12; //[13:12]
-		//dipsw |= (MENU_CYCLE_VALUE(&topmenu[5])  & 0x3) << 2;  //[3:2]
-		dipsw |= (MENU_CYCLE_VALUE(&topmenu[5])  & 0x1) << 4;  //[4]
-		dipsw |= (MENU_CYCLE_VALUE(&topmenu[6])  & 0x3) << 17; //[18:17]
-		dipsw |= (MENU_CYCLE_VALUE(&topmenu[7])  & 0x3) << 10; //[11:10]
-		dipsw |= (MENU_CYCLE_VALUE(&topmenu[8])  & 0x1) << 16; //[16]
-		dipsw |= (MENU_CYCLE_VALUE(&topmenu[9]) & 0x3) << 14; //[15:14]
-		dipsw |= (MENU_CYCLE_VALUE(&topmenu[10]) & 0x1) << 19; //[19]
-		dipsw |= (MENU_CYCLE_VALUE(&topmenu[11]) & 0x1) << 20; //[20]
-		dipsw |= (MENU_CYCLE_VALUE(&topmenu[12]) & 0x3) << 8;  //[9:8]
+		//Posicion del menu desde 0, 0x? bits max, << ? Posicion DIP
+		//EJ: dipsw |= (MENU_CYCLE_VALUE(&topmenu[4])  & 0x7) << 3; 
+		// Posicion 5 del topmenu, usa 3 bits, posicion dip [5:3]
+		dipsw |= (MENU_CYCLE_VALUE(&vidmenu[0])  & 0x1) << 2;  //2 
+		dipsw |= (MENU_CYCLE_VALUE(&vidmenu[1])  & 0x1) << 24; //24 
+		dipsw |= (MENU_CYCLE_VALUE(&vidmenu[2])  & 0x3) << 4;  //5:4 	
+		dipsw |= (MENU_CYCLE_VALUE(&vidmenu[3])  & 0x7) << 8;  //10:8 
+
+		dipsw |= (MENU_CYCLE_VALUE(&audmenu[0])  & 0x1) << 13; //13 
+		dipsw |= (MENU_CYCLE_VALUE(&audmenu[1])  & 0x1) << 16; //16 
+		dipsw |= (MENU_CYCLE_VALUE(&audmenu[2])  & 0x7) << 20; //22:20 
+		dipsw |= (MENU_CYCLE_VALUE(&audmenu[3])  & 0x1) << 6;  //6
+		dipsw |= (MENU_CYCLE_VALUE(&audmenu[4])  & 0x1) << 12; //12 
+		dipsw |= (MENU_CYCLE_VALUE(&audmenu[5])  & 0x3) << 18; //19:18 
+
+		dipsw |= (MENU_CYCLE_VALUE(&prtmenu[0])  & 0x1) << 3;  //3
+		dipsw |= (MENU_CYCLE_VALUE(&prtmenu[1])  & 0x1) << 1;  //1
+		dipsw |= (MENU_CYCLE_VALUE(&prtmenu[2])  & 0x3) << 26; //27:26
+		dipsw |= (MENU_CYCLE_VALUE(&prtmenu[3])  & 0x3) << 28; //29:28
+
+		dipsw |= (MENU_CYCLE_VALUE(&topmenu[8])  & 0x3) << 14; //15:14
+		dipsw |= (MENU_CYCLE_VALUE(&topmenu[9])  & 0x1) << 11; //11
+		dipsw |= (MENU_CYCLE_VALUE(&topmenu[10]) & 0x1) << 30; //11
 		HW_HOST(REG_HOST_SW)=dipsw;	// Send the new values to the hardware.
 		// If the menu's visible, prevent keystrokes reaching the host core.
 		HW_HOST(REG_HOST_CONTROL)=(visible ?

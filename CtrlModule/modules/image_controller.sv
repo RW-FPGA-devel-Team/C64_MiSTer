@@ -81,7 +81,7 @@ assign	sram_addr_o = sram_addr_s;
 											sd_ack <= 1'b1;
 											state_s <= P1;							
 											
-											sd_addr = sd_lba[16:0];//(sd_lba[16:0] > 9'd256)? sd_lba[16:0] - 9'd256 : sd_lba[16:0]; // ATTENTION blocking assignment
+											sd_addr = sd_lba[16:0]; //(sd_lba[16:0] > 9'd256)? sd_lba[16:0] - 9'd256 : sd_lba[16:0]; // ATTENTION blocking assignment
 											sram_addr_s[19:9] =  sd_addr[10:0];
 											sram_addr_s[8:0] = 9'b000000000;
 						

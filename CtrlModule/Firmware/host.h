@@ -17,8 +17,9 @@
 #define HOST_CONTROL_LOADROM 8
 #define HOST_CONTROL_VIDEO 16
 #define HOST_CONTROL_LOADMED 32
-/* #define HOST_CONTROL_LOADDSK 64  */
-/* #define HOST_CONTROL_LOADCRT 128 */
+#define HOST_CONTROL_PLAY 64 
+#define HOST_CONTROL_RSTCRT 128
+#define HOST_CONTROL_UNLOADTAP 256
 
 /* DIP switches / "Front Panel" controls - bits 15 downto 0 */
 #define REG_HOST_SCALERED 0x10

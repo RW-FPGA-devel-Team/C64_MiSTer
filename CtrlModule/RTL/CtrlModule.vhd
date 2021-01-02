@@ -11,7 +11,7 @@ use work.zpupkg.ALL;
 
 entity data_io is
 	generic (
-		sysclk_frequency : integer := 640 --500 -- Sysclk frequency * 10 
+		sysclk_frequency : integer := 320 --500 -- Sysclk frequency * 10 
 	);
 	port (
 		clk 			: in std_logic;
@@ -428,7 +428,7 @@ begin
 							host_bootdata_adr_W<=host_bootdata_adr;
 							host_bootdata<=mem_write;
 							host_bootdata_adr<=std_logic_vector(unsigned(host_bootdata_adr) + 1);
-							host_bootdata_req<=not host_bootdata_req;
+							host_bootdata_req<='1'; --not host_bootdata_req;
 
 						when X"EC" => -- Host control
 							mem_busy<='0';
@@ -517,7 +517,7 @@ begin
 		-- Boot data termination - allow CPU to proceed once boot data is acknowleged:
 		if host_bootdata_ack='1' then
 			mem_busy<='0';
-			--host_bootdata_req<='0';
+			host_bootdata_req<='0';--
 		end if;
 
 		
@@ -663,13 +663,13 @@ end process;
 process(clk)
 begin 
  if rising_edge(clk) then
-  if ioctl_ce = '1' or ioctl_index(3 downto 0) = x"1" then --Para la carga a SRAM no tiene que usar el "ioctl_ce"
-   rclkD <= host_bootdata_req;
-   rclkD2 <= rclkD;
    ioctl_wr <= '0';
    host_bootdata_ack<='0';
+  if ioctl_ce = '1' then --or ioctl_index(3 downto 0) = x"1" then --Para la carga a SRAM no tiene que usar el "ioctl_ce"
+   --rclkD <= host_bootdata_req;
+  -- rclkD2 <= rclkD;
    ioctl_download<=host_download;
-   if (rclkD /= rclkD2) then
+   if (host_bootdata_req = '1') then --(rclkD /= rclkD2) then
 	 ioctl_dout<=host_bootdata(7 downto 0);
 	 ioctl_addr<=host_bootdata_adr_W;
 	 ioctl_wr<='1';
