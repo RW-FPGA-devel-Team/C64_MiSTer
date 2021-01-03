@@ -488,8 +488,8 @@ data_io data_io
 	.JOY_LOAD(JOY_LOAD),
 	.JOY_DATA(JOY_DATA),
 	.JOY_SELECT(JOY_SELECT),
-	.joy1(JoyA),
-	.joy2(JoyB),
+	.joy1(joyA),
+	.joy2(joyB),
 `endif
 	.dac_MCLK(MCLK),
 	.dac_LRCK(LRCLK),
