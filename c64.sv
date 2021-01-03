@@ -1261,7 +1261,10 @@ assign AUDIO_L = alo;
 assign AUDIO_R = aro;
 assign AUDIO_S = 1;
 assign AUDIO_MIX = status[19:18];
-
+`ifndef CYCLONE
+wire [15:0] AUDIO_L;
+wire [15:0] AUDIO_R;
+`endif	
 //------------- TAP -------------------
 
 reg [24:0] tap_play_addr;
@@ -1350,7 +1353,7 @@ assign SRAM_UB_N   = 1'b1;
 image_controller image_controller1
 (
     
-		.clk_i			( clk_sys ),
+		.clk_i			( clk_sys ), //~ce_c1541 ),// ~clk_sys ),
 		.reset_i		   ( ~reset_n ),
  	 
 		.sd_lba			( sd_lba1 ), //c1541_1_busy ? sd_lba1 : sd_lba2 ), 

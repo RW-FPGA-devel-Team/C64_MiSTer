@@ -663,11 +663,11 @@ end process;
 process(clk)
 begin 
  if rising_edge(clk) then
-   ioctl_wr <= '0';
-   host_bootdata_ack<='0';
   if ioctl_ce = '1' or ioctl_index(3 downto 0) = x"1" then --Para la carga a SRAM no tiene que usar el "ioctl_ce"
    rclkD <= host_bootdata_req;
    rclkD2 <= rclkD;
+   ioctl_wr <= '0';
+   host_bootdata_ack<='0';
    ioctl_download<=host_download;
    if (rclkD /= rclkD2) then
 	 ioctl_dout<=host_bootdata(7 downto 0);
