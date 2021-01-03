@@ -1261,7 +1261,7 @@ assign AUDIO_L = alo;
 assign AUDIO_R = aro;
 assign AUDIO_S = 1;
 assign AUDIO_MIX = status[19:18];
-`ifndef CYCLONE
+`ifdef CYCLONE
 wire [15:0] AUDIO_L;
 wire [15:0] AUDIO_R;
 `endif	
