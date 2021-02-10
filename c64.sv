@@ -215,13 +215,13 @@ assign VGA_SCALER = 0;
 
 `include "build_id.v"
 localparam CONF_STR = {
-	"C64;;",
+	"C64;UART2400;",
 	"S0,D64T64,Mount Drive #8;",
 	"D0S1,D64T64,Mount Drive #9;",
 	"OP,Enable Drive #9,No,Yes;",
 	"-;",
-	"F,PRG,Load File;",
-	"F,CRT,Load Cartridge;",
+	"F4,PRG,Load File;",
+	"F5,CRT,Load Cartridge;",
 	"-;",
 	"F,TAP,Tape Load;",
 	"R7,Tape Play/Pause;",
@@ -245,7 +245,7 @@ localparam CONF_STR = {
 	"OQR,Pot 1&2,Joy 1 Fire 2/3,Mouse,Paddles 1&2;",
 	"OST,Pot 3&4,Joy 2 Fire 2/3,Mouse,Paddles 3&4;",
 	"-;",
-	"OEF,Kernal,Loadable C64,Standard C64,C64GS;",
+	"OEF,Kernal,Loadable C64,Standard C64,C64GS,Japanese;",
 	"-;",
 	"RH,Reset;",
 	"R0,Reset & Detach Cartridge;",
@@ -448,8 +448,7 @@ hps_io #(.STRLEN($size(CONF_STR)>>3), .VDNUM(2)) hps_io
 	.ioctl_wr(ioctl_wr),
 	.ioctl_addr(ioctl_addr),
 	.ioctl_dout(ioctl_data),
-	.ioctl_wait(ioctl_req_wr),
-	.uart_mode(16'b000_11111_000_11111)
+	.ioctl_wait(ioctl_req_wr)
 );
 `else
 wire [7:0]R_OSD,G_OSD,B_OSD;
@@ -571,6 +570,7 @@ cartridge cartridge
 	.IOF_ena(IOF_rom),
 	.max_ram(max_ram),
 	.freeze_key(freeze_key),
+	.mod_key(mod_key),
 	.nmi(nmi),
 	.nmi_ack(nmi_ack)
 );
@@ -861,6 +861,7 @@ wire        ram_ce;
 wire        ram_we;
 wire        nmi_ack;
 wire        freeze_key;
+wire        mod_key;
 
 wire        IOE;
 wire        IOF;
@@ -902,6 +903,7 @@ fpga64_sid_iec fpga64
 	.nmi_n(~nmi),
 	.nmi_ack(nmi_ack),
 	.freeze_key(freeze_key),
+	.mod_key(mod_key),
 	.dma_n(1'b1),
 	.roml(romL),
 	.romh(romH),
