@@ -510,7 +510,7 @@ data_io data_io
 
 	.status(status),
 	
-	.ioctl_ce(~ioctl_req_wr),
+	.ioctl_ce(~ioctl_req_wr & io_cycle & io_cycle_ce), //io_cycle_ce
 	.ioctl_wr(ioctl_wr),
 	.ioctl_addr(ioctl_addr),
 	.ioctl_dout(ioctl_data),
@@ -770,7 +770,9 @@ always @(posedge clk_sys) begin
 		end
 	end
 
+`ifndef CYCLONE //Evita que autoescriba RUN despues de cargar PRGs (provoca fallos en algunos)
 	start_strk <= (old_meminit && !inj_meminit);
+`endif
 	
 	old_st0 <= status[0];
 	if (~old_st0 & status[0]) cart_attached <= 0;
@@ -1350,10 +1352,11 @@ assign SRAM_OE_N   = 1'b0;
 assign SRAM_LB_N   = 1'b0;
 assign SRAM_UB_N   = 1'b1;
 
+
 image_controller image_controller1
 (
     
-		.clk_i			( clk_sys ), //~ce_c1541 ),// ~clk_sys ),
+		.clk_i			( clk64 ), //ce_c1541
 		.reset_i		   ( ~reset_n ),
  	 
 		.sd_lba			( sd_lba1 ), //c1541_1_busy ? sd_lba1 : sd_lba2 ), 
