@@ -90,8 +90,11 @@ always @(posedge clk) begin
 	reg saving = 0;
 
 	old_change <= change;
+`ifndef CYCLONE
 	if(~old_change & change) ready <= 1;
-	
+`else
+	if(old_change & ~change) ready <= 1;
+`endif
 	ack1 <= sd_b_ack;
 	ack2 <= ack1;
 	if(ack2 == ack1) ack <= ack1;

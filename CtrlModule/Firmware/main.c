@@ -229,7 +229,8 @@ static char *st_kernel[]=
 {
 	"Kernel Cargable",
 	"Kernel C64",
-	"Kernel C64GS"
+	"Kernel C64GS",
+	"Kernel Japones"
 };
 
 // Video submenu
@@ -270,15 +271,15 @@ static struct menu_entry prtmenu[]=
 static struct menu_entry topmenu[]=
 {
 //      NUMERO MAXIMO DE LINEAS EN MENU SON 16 (PARA MAS HACER SUBMENUS)
-	{MENU_ENTRY_CALLBACK,"   =COMODORE 64=   ",0},
-	{MENU_ENTRY_CALLBACK,"   by NeuroRulez   ",0},
-	{MENU_ENTRY_CALLBACK,"                   ",0},
+	{MENU_ENTRY_CALLBACK,"   = COMODORE  64 =   ",0},
+	{MENU_ENTRY_CALLBACK,"      NeuroRulez      ",0},
+	{MENU_ENTRY_CALLBACK,"                      ",0},
 	{MENU_ENTRY_CALLBACK,"Reset",MENU_ACTION(&Reset)},	
 	{MENU_ENTRY_CALLBACK,"Reset & Soltar Cartucho",MENU_ACTION(&ResetCrt)},
 	{MENU_ENTRY_SUBMENU,"Video \x10",MENU_ACTION(vidmenu)},
 	{MENU_ENTRY_SUBMENU,"Audio \x10",MENU_ACTION(audmenu)},
 	{MENU_ENTRY_SUBMENU,"Puertos \x10",MENU_ACTION(prtmenu)},
-	{MENU_ENTRY_CYCLE,(char *)st_kernel,MENU_ACTION(3)},
+	{MENU_ENTRY_CYCLE,(char *)st_kernel,MENU_ACTION(4)},
 	{MENU_ENTRY_CYCLE,(char *)st_tapsnd,MENU_ACTION(2)},
 	{MENU_ENTRY_CYCLE,(char *)st_fdwr,MENU_ACTION(2)},
 	{MENU_ENTRY_CALLBACK,"Sacar Cinta",MENU_ACTION(&UnloadTap)},
