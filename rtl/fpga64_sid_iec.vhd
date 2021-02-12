@@ -103,6 +103,12 @@ port(
 	sid_we_ext  : out std_logic;
 	sid_mode    : in  std_logic_vector(1 downto 0);
 
+	-- DigiMax
+	dm_digi_sid   : in std_logic;
+	dm_dac        : out std_logic_vector(31 downto 0);
+	dm_sid        : out std_logic_vector(3 downto 0);
+	dm_sid_sample : out std_logic;
+	
 	-- IEC
 	iec_data_o	: out std_logic;
 	iec_data_i	: in  std_logic;
@@ -240,6 +246,23 @@ signal pot_y2       : std_logic_vector(7 downto 0);
 signal audio_8580   : std_logic_vector(17 downto 0);
 
 signal clk_1MHz     : std_logic_vector(31 downto 0);
+
+component DigiMax
+	port (
+	   clk      : in std_logic;
+		reset_n  : in std_logic;
+		addr     : in std_logic_vector(15 downto 0);
+		data_in  : in std_logic_vector(7 downto 0);
+		wr_n		: in std_logic;
+		sid_sample  : out std_logic;
+		sid_dm      : out std_logic_vector (3 downto 0);
+		sid_redirect: in std_logic;
+		dac_0    : out std_logic_vector(7 downto 0);
+		dac_1    : out std_logic_vector(7 downto 0);
+		dac_2    : out std_logic_vector(7 downto 0);
+		dac_3    : out std_logic_vector(7 downto 0)			
+ );
+end component DigiMax;
 
 component sid8580
 	port (
@@ -609,6 +632,23 @@ port map (
 	audio_data => audio_8580,
 	extfilter_en => extfilter_en
 );
+
+Digi : DigiMax
+port map (
+   clk     => clk32,
+	reset_n => reset_n,
+	wr_n   => not cpuWe, --not (sid_we and sid_sel_int),
+	sid_redirect => dm_digi_sid,
+	sid_sample   => dm_sid_sample,
+	sid_dm       => dm_sid,
+	addr   => std_logic_vector(cpuAddr),
+	data_in=> std_logic_vector(cpuDo),
+	dac_0  => dm_dac(31 downto 24), --dac_0,
+	dac_1  => dm_dac(23 downto 16), --dac_1,
+	dac_2  => dm_dac(15 downto 8),  --dac_2,
+	dac_3  => dm_dac(7 downto 0)    --dac_3
+);
+
 
 -- -----------------------------------------------------------------------
 -- CIAs

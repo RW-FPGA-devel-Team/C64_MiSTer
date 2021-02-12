@@ -870,10 +870,14 @@ wire        romH;
 wire        UMAXromH;
 
 wire        sid_we;
-wire [17:0] audio_l;
+wire [17:0] audio_out;
 wire  [7:0] r,g,b;
 
 wire        ntsc = status[2];
+
+wire [31:0] dm_dac_l, dm_dac_r;
+wire  [3:0] dm_sid, dm_sid2;
+wire dm_sid_sample, dm_sid_sample2;
 
 fpga64_sid_iec fpga64
 (
@@ -927,9 +931,13 @@ fpga64_sid_iec fpga64
 	.idle(idle),
 	.sid_we_ext(sid_we),
 	.sid_mode({status[22:21]==1,status[20]}),
-	.audio_data(audio_l),
+	.audio_data(audio_out),
 	.extfilter_en(~status[6]),
 	.sid_ver(status[13]),
+	.dm_digi_sid(status[31]),
+	.dm_dac(dm_dac_l),
+	.dm_sid(dm_sid),
+	.dm_sid_sample(dm_sid_sample),
 	.iec_data_o(c64_iec_data),
 	.iec_atn_o(c64_iec_atn),
 	.iec_clk_o(c64_iec_clk),
@@ -1249,7 +1257,9 @@ sid8580 sid_8580
 	.audio_data(audio8580_r)
 );	
 
-wire [17:0] audio_r = status[16] ? audio8580_r : audio6581_r;
+wire [17:0] audio_r = status[31] & dm_sid_sample ? {{4{dm_sid}},2'b00} : status[16] ? status[30] ? audio8580_r + dm_dac_l[15:0] : audio8580_r : status[30] ? audio6581_r + dm_dac_l[15:0] : audio6581_r;
+wire [17:0] audio_l = status[31] & dm_sid_sample ? {{4{dm_sid}},2'b00} : status[30] ? audio_out + dm_dac_l[31:16] : audio_out;
+
 
 reg [15:0] alo,aro;
 always @(posedge clk_sys) begin
