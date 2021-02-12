@@ -238,6 +238,8 @@ localparam CONF_STR = {
 	"OKM,SID Right addr,Same,DE00,D420,D500,DF00;",
 	"O6,Audio Filter,On,Off;",
 	"OC,Sound Expander,No,OPL2;",
+	"0U,Digimax,No,Yes;",
+	"0V,SID Digital to DigiMax;",	
 	"OIJ,Stereo Mix,None,25%,50%,100%;",
 	"-;",
 	"O3,Swap Joysticks,No,Yes;",
