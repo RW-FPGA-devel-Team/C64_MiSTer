@@ -1,40 +1,45 @@
-set_location_assignment PIN_T2 -to CLK_50M
+#Basic Global Defines
+set_global_assignment -name GENERATE_RBF_FILE ON
+set_global_assignment -name ON_CHIP_BITSTREAM_DECOMPRESSION OFF
+set_global_assignment -name CYCLONEII_RESERVE_NCEO_AFTER_CONFIGURATION "USE AS REGULAR IO"
 
+#Clock & LED
+set_location_assignment PIN_T2 -to CLK_50M
 set_location_assignment PIN_A5 -to LED_USER
 
 #SRAM
-set_location_assignment PIN_AB14 -to sram_addr[20]
-set_location_assignment PIN_AB13 -to sram_addr[19]
-set_location_assignment PIN_E21  -to sram_addr[18]
-set_location_assignment PIN_F21  -to sram_addr[17]
-set_location_assignment PIN_H21  -to sram_addr[16]
-set_location_assignment PIN_J21  -to sram_addr[15]
-set_location_assignment PIN_K21 -to sram_addr[14]
-set_location_assignment PIN_L21  -to sram_addr[13]
-set_location_assignment PIN_M21 -to sram_addr[12]
-set_location_assignment PIN_N21  -to sram_addr[11]
-set_location_assignment PIN_P21 -to sram_addr[10]
-set_location_assignment PIN_R21  -to sram_addr[9]
-set_location_assignment PIN_U21  -to sram_addr[8]
-set_location_assignment PIN_V21  -to sram_addr[7]
-set_location_assignment PIN_W21  -to sram_addr[6]
-set_location_assignment PIN_Y21 -to sram_addr[5]
-set_location_assignment PIN_AB20 -to sram_addr[4]
-set_location_assignment PIN_AB19 -to sram_addr[3]
-set_location_assignment PIN_AB18 -to sram_addr[2]
-set_location_assignment PIN_AB17 -to sram_addr[1]
-set_location_assignment PIN_AB16 -to sram_addr[0]
+set_location_assignment PIN_AB14 -to SRAM_ADDR[20]
+set_location_assignment PIN_AB13 -to SRAM_ADDR[19]
+set_location_assignment PIN_E21  -to SRAM_ADDR[18]
+set_location_assignment PIN_F21  -to SRAM_ADDR[17]
+set_location_assignment PIN_H21  -to SRAM_ADDR[16]
+set_location_assignment PIN_J21  -to SRAM_ADDR[15]
+set_location_assignment PIN_K21  -to SRAM_ADDR[14]
+set_location_assignment PIN_L21  -to SRAM_ADDR[13]
+set_location_assignment PIN_M21  -to SRAM_ADDR[12]
+set_location_assignment PIN_N21  -to SRAM_ADDR[11]
+set_location_assignment PIN_P21  -to SRAM_ADDR[10]
+set_location_assignment PIN_R21  -to SRAM_ADDR[9]
+set_location_assignment PIN_U21  -to SRAM_ADDR[8]
+set_location_assignment PIN_V21  -to SRAM_ADDR[7]
+set_location_assignment PIN_W21  -to SRAM_ADDR[6]
+set_location_assignment PIN_Y21  -to SRAM_ADDR[5]
+set_location_assignment PIN_AB20 -to SRAM_ADDR[4]
+set_location_assignment PIN_AB19 -to SRAM_ADDR[3]
+set_location_assignment PIN_AB18 -to SRAM_ADDR[2]
+set_location_assignment PIN_AB17 -to SRAM_ADDR[1]
+set_location_assignment PIN_AB16 -to SRAM_ADDR[0]
                         
-set_location_assignment PIN_AB15 -to sram_data[7]
-set_location_assignment PIN_W22  -to sram_data[6]
-set_location_assignment PIN_Y22  -to sram_data[5]
-set_location_assignment PIN_AA20 -to sram_data[4]
-set_location_assignment PIN_AA19 -to sram_data[3]
-set_location_assignment PIN_AA18 -to sram_data[2]
-set_location_assignment PIN_AA17 -to sram_data[1]
-set_location_assignment PIN_AA16 -to sram_data[0]
+set_location_assignment PIN_AB15 -to SRAM_DATA[7]
+set_location_assignment PIN_W22  -to SRAM_DATA[6]
+set_location_assignment PIN_Y22  -to SRAM_DATA[5]
+set_location_assignment PIN_AA20 -to SRAM_DATA[4]
+set_location_assignment PIN_AA19 -to SRAM_DATA[3]
+set_location_assignment PIN_AA18 -to SRAM_DATA[2]
+set_location_assignment PIN_AA17 -to SRAM_DATA[1]
+set_location_assignment PIN_AA16 -to SRAM_DATA[0]
 
-set_location_assignment PIN_D21 -to sram_we_n
+set_location_assignment PIN_D21 -to SRAM_WE_N
 
 #SD
 set_location_assignment PIN_C22 -to SD_SCK

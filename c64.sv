@@ -375,6 +375,7 @@ wire [15:0] joyA,joyB,joyC,joyD;
 `ifdef JOYDC
 assign joyA[5:0] = ~JOYSTICK1[5:0];
 assign joyB[5:0] = ~JOYSTICK2[5:0];
+assign JOY_SELECT = 1'b1;
 `endif
 
 wire [31:0] status;
@@ -459,6 +460,7 @@ wire [7:0]R_IN = ~(hblank | vblank) ? r : 0;
 wire [7:0]G_IN = ~(hblank | vblank) ? g : 0;
 wire [7:0]B_IN = ~(hblank | vblank) ? b : 0;
 assign VGA_CLOCK = CLK_VIDEO;
+assign VGA_BLANK = 1'b1;
 
 data_io data_io
 (
@@ -877,7 +879,7 @@ wire  [7:0] r,g,b;
 
 wire        ntsc = status[2];
 
-wire [31:0] dm_dac_l, dm_dac_r;
+wire [31:0] dm_dac;
 wire  [3:0] dm_sid, dm_sid2;
 wire dm_sid_sample, dm_sid_sample2;
 
@@ -937,7 +939,7 @@ fpga64_sid_iec fpga64
 	.extfilter_en(0),
 	.sid_ver(status[13]),
 	.dm_digi_sid(status[31]),
-	.dm_dac(dm_dac_l),
+	.dm_dac(dm_dac),
 	.dm_sid(dm_sid),
 	.dm_sid_sample(dm_sid_sample),
 	.palette(status[6]),
@@ -1260,8 +1262,8 @@ sid8580 sid_8580
 	.audio_data(audio8580_r)
 );	
 
-wire [17:0] audio_r = status[31] & dm_sid_sample ? {{4{dm_sid}},2'b00} : status[16] ? status[30] ? audio8580_r + dm_dac_l[15:0] : audio8580_r : status[30] ? audio6581_r + dm_dac_l[15:0] : audio6581_r;
-wire [17:0] audio_l = status[31] & dm_sid_sample ? {{4{dm_sid}},2'b00} : status[30] ? audio_out + dm_dac_l[31:16] : audio_out;
+wire [17:0] audio_r = status[31] & dm_sid_sample ? {{4{dm_sid}},2'b00} : status[16] ? status[30] ? audio8580_r + dm_dac[15:0] : audio8580_r : status[30] ? audio6581_r + dm_dac[15:0] : audio6581_r;
+wire [17:0] audio_l = status[31] & dm_sid_sample ? {{4{dm_sid}},2'b00} : status[30] ? audio_out + dm_dac[31:16] : audio_out;
 
 
 reg [15:0] alo,aro;
