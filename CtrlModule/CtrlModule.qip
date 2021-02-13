@@ -12,9 +12,13 @@ set_global_assignment -name VHDL_FILE          ../CtrlModule/CharROM/CharROM_ROM
 set_global_assignment -name VHDL_FILE          ../CtrlModule/Firmware/CtrlROM_ROM.vhd
 set_global_assignment -name VHDL_FILE          ../CtrlModule/ZPUFlex/zpu_core_flex.vhd
 set_global_assignment -name VHDL_FILE          ../CtrlModule/ZPUFlex/zpupkg.vhd
-set_global_assignment -name VHDL_FILE          ../CtrlModule/modules/audio_i2s.vhd
-set_global_assignment -name VERILOG_FILE       ../CtrlModule/modules/sigma_delta_dac.v
 set_global_assignment -name VERILOG_FILE       ../CtrlModule/modules/joydecoder_neptuno.v
 set_global_assignment -name VERILOG_FILE       ../CtrlModule/modules/csync.v
+set_global_assignment -name VERILOG_FILE       ../CtrlModule/modules/audio/audio_sys.v
+set_global_assignment -name VERILOG_FILE       ../CtrlModule/modules/audio/audio_out.v
+set_global_assignment -name VERILOG_FILE       ../CtrlModule/modules/audio/i2s.v
+set_global_assignment -name VERILOG_FILE       ../CtrlModule/modules/audio/iir_filter.v
+set_global_assignment -name VERILOG_FILE       ../CtrlModule/modules/audio/sigma_delta_dac.v
+set_global_assignment -name VERILOG_FILE       ../CtrlModule/modules/audio/spdif.v
 set_global_assignment -name SYSTEMVERILOG_FILE ../CtrlModule/modules/image_controller.sv
 

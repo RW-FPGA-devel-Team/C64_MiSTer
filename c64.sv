@@ -173,6 +173,7 @@ module emu
 	output        JOY_LOAD,
 	input         JOY_DATA,
 	output        JOY_SELECT,
+	output        BUZZER,
 `else
 	input	     [5:0]JOYSTICK1,
 	input      [5:0]JOYSTICK2,
@@ -376,6 +377,7 @@ wire [15:0] joyA,joyB,joyC,joyD;
 assign joyA[5:0] = ~JOYSTICK1[5:0];
 assign joyB[5:0] = ~JOYSTICK2[5:0];
 assign JOY_SELECT = 1'b1;
+assign BUZZER = 1'b0;
 `endif
 
 wire [31:0] status;
@@ -502,7 +504,8 @@ data_io data_io
 	.sigma_R(AUDSG_R),
 	.L_data(AUDIO_L),
 	.R_data(AUDIO_R),
-	
+	.S_data(AUDIO_S),
+	.audio_mix(AUDIO_MIX),
 	.spi_miso(SD_MISO),
 	.spi_mosi(SD_MOSI),
 	.spi_clk(SD_SCK),

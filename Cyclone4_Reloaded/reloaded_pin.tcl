@@ -6,6 +6,7 @@ set_global_assignment -name CYCLONEII_RESERVE_NCEO_AFTER_CONFIGURATION "USE AS R
 #Clock & LED
 set_location_assignment PIN_T2 -to CLK_50M
 set_location_assignment PIN_A5 -to LED_USER
+set_location_assignment PIN_B20 -to BUZZER
 
 #SRAM
 set_location_assignment PIN_AB14 -to SRAM_ADDR[20]

@@ -56,7 +56,9 @@ entity data_io is
 		sigma_R : out std_logic;
 	   L_data : in std_logic_vector(15  downto 0); 	
 	   R_data : in std_logic_vector(15  downto 0); 	
-
+		S_data : in std_logic;
+		audio_mix : in std_logic_vector(1 downto 0);
+		
 		-- SD card interface
 		spi_miso		: in std_logic := '1';
 		spi_mosi		: out std_logic;
@@ -199,13 +201,20 @@ signal joystick2 : std_logic_vector(7 downto 0);
 		);
 	END COMPONENT;
 
-	COMPONENT sigma_delta_dac
+	COMPONENT audio_sys
 	PORT
 		(			
-			CLK		:	 IN  STD_LOGIC;
-			RESET		:	 IN  STD_LOGIC;
-			DACin		:   IN  STD_LOGIC_VECTOR(15 downto 0);
-			DACout	:   OUT STD_LOGIC
+	         clk_audio :	 IN  STD_LOGIC;
+	         reset     :	 IN  STD_LOGIC;
+	         L_data    :   IN  STD_LOGIC_VECTOR(15 downto 0);
+	         R_data    :   IN  STD_LOGIC_VECTOR(15 downto 0);
+	         S_data    :	 IN  STD_LOGIC;
+	         audio_mix :   IN  STD_LOGIC_VECTOR(1 downto 0);
+	         dac_SCLK  :	 OUT  STD_LOGIC;
+	         dac_LRCK  :	 OUT  STD_LOGIC;
+	         dac_SDIN  :	 OUT  STD_LOGIC;
+	         sigma_L   :	 OUT  STD_LOGIC;
+	         sigma_R   :	 OUT  STD_LOGIC
 		);
 	END COMPONENT;
 
@@ -571,36 +580,21 @@ port map
 joy1 <= not joystick1(6 downto 0);
 joy2 <= not joystick2(6 downto 0);
 
-audio_top : entity work.audio_top  
+audio : audio_sys  
 port map
 (
-	clk_50MHz => CLOCK_50,
-	dac_MCLK  => dac_MCLK,
-	dac_LRCK  => dac_LRCK,
-	dac_SCLK  => dac_SCLK,
-	dac_SDIN  => dac_SDIN,
+	clk_audio => CLOCK_50,
+	reset     => not reset_n,
 	L_data    => L_data,
-	R_data    => R_data
+	R_data    => R_data,
+	S_data    => S_data,
+	audio_mix => audio_mix,
+	dac_SCLK  => dac_SCLK,
+	dac_LRCK  => dac_LRCK,
+	dac_SDIN  => dac_SDIN,
+	sigma_L   => sigma_L,
+	sigma_R   => sigma_R
 ); 
-
-sigma_delta_dac_l : sigma_delta_dac
-port map
-(
-	CLK => CLOCK_50,
-	RESET => not reset_n,
-	DACin => not L_data(15) & L_data(14 downto 0),
-	DACout => sigma_L
-);
-
-sigma_delta_dac_r : sigma_delta_dac
-port map
-(
-	CLK => CLOCK_50,
-	RESET => not reset_n,
-	DACin => not R_data(15) & R_data(14 downto 0),
-	DACout => sigma_R
-);
-
 ---	
 
 process(clk)
