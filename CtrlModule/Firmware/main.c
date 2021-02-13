@@ -145,6 +145,12 @@ static char *st_videoar[]=
 	"Formato [ARC2]"
 };
 
+static char *st_paleta[]=
+{
+	"Paleta C64",
+	"Paleta CePeCeRa"
+};
+
 static char *st_sid_l[]=
 {
 	"SID Izquierdo 6581",
@@ -166,13 +172,6 @@ static char *st_sid_addr[]=
 	"SID Derecho Addr DF00"
 };
 
-static char *st_filter[]=
-{
-	"Filtro de Audio On",
-	"Filtro de Audio Off"
-};
-
-
 static char *st_sndexp[]=
 {
 	"Expansion de Sonido No",
@@ -185,6 +184,18 @@ static char *st_stereomix[]=
 	"Mezcla Stereo 25%",
 	"Mezcla Stereo 50%",
 	"Mezcla Stereo 75%"
+};
+
+static char *st_dm[]=
+{
+	"Digimax No",
+	"Digimax Si"
+};
+
+static char *st_sid_dm[]=
+{
+	"Sid digital a Digimax No",
+	"Sid digital a Digimax Si"
 };
 
 static char *st_joys[]=
@@ -240,6 +251,7 @@ static struct menu_entry vidmenu[]=
 	{MENU_ENTRY_CYCLE,(char *)st_videofrm,MENU_ACTION(2)},	
 	{MENU_ENTRY_CYCLE,(char *)st_videoar,MENU_ACTION(4)},	
 	{MENU_ENTRY_CYCLE,(char *)st_scanlines,MENU_ACTION(6)},	
+	{MENU_ENTRY_CYCLE,(char *)st_paleta,MENU_ACTION(2)},
 	{MENU_ENTRY_SUBMENU,"Exit",MENU_ACTION(topmenu)},
 	{MENU_ENTRY_NULL,0,0}
 };
@@ -249,9 +261,10 @@ static struct menu_entry audmenu[]=
 	{MENU_ENTRY_CYCLE,(char *)st_sid_l,MENU_ACTION(2)},	
 	{MENU_ENTRY_CYCLE,(char *)st_sid_r,MENU_ACTION(2)},	
 	{MENU_ENTRY_CYCLE,(char *)st_sid_addr,MENU_ACTION(5)},
-	{MENU_ENTRY_CYCLE,(char *)st_filter,MENU_ACTION(2)},
 	{MENU_ENTRY_CYCLE,(char *)st_sndexp,MENU_ACTION(2)},
 	{MENU_ENTRY_CYCLE,(char *)st_stereomix,MENU_ACTION(4)},
+	{MENU_ENTRY_CYCLE,(char *)st_dm,MENU_ACTION(2)},
+	{MENU_ENTRY_CYCLE,(char *)st_sid_dm,MENU_ACTION(2)},
 	{MENU_ENTRY_SUBMENU,"Exit",MENU_ACTION(topmenu)},
 	{MENU_ENTRY_NULL,0,0}
 };
@@ -477,13 +490,15 @@ int main(int argc,char **argv)
 		dipsw |= (MENU_CYCLE_VALUE(&vidmenu[1])  & 0x1) << 24; //24 
 		dipsw |= (MENU_CYCLE_VALUE(&vidmenu[2])  & 0x3) << 4;  //5:4 	
 		dipsw |= (MENU_CYCLE_VALUE(&vidmenu[3])  & 0x7) << 8;  //10:8 
+		dipsw |= (MENU_CYCLE_VALUE(&vidmenu[4])  & 0x1) << 6;  //6
 
 		dipsw |= (MENU_CYCLE_VALUE(&audmenu[0])  & 0x1) << 13; //13 
 		dipsw |= (MENU_CYCLE_VALUE(&audmenu[1])  & 0x1) << 16; //16 
 		dipsw |= (MENU_CYCLE_VALUE(&audmenu[2])  & 0x7) << 20; //22:20 
-		dipsw |= (MENU_CYCLE_VALUE(&audmenu[3])  & 0x1) << 6;  //6
-		dipsw |= (MENU_CYCLE_VALUE(&audmenu[4])  & 0x1) << 12; //12 
-		dipsw |= (MENU_CYCLE_VALUE(&audmenu[5])  & 0x3) << 18; //19:18 
+		dipsw |= (MENU_CYCLE_VALUE(&audmenu[3])  & 0x1) << 12; //12 
+		dipsw |= (MENU_CYCLE_VALUE(&audmenu[4])  & 0x3) << 18; //19:18 
+		dipsw |= (MENU_CYCLE_VALUE(&audmenu[5])  & 0x1) << 30; //
+		dipsw |= (MENU_CYCLE_VALUE(&audmenu[6])  & 0x1) << 31; //
 
 		dipsw |= (MENU_CYCLE_VALUE(&prtmenu[0])  & 0x1) << 3;  //3
 		dipsw |= (MENU_CYCLE_VALUE(&prtmenu[1])  & 0x1) << 1;  //1
@@ -492,7 +507,7 @@ int main(int argc,char **argv)
 
 		dipsw |= (MENU_CYCLE_VALUE(&topmenu[8])  & 0x3) << 14; //15:14
 		dipsw |= (MENU_CYCLE_VALUE(&topmenu[9])  & 0x1) << 11; //11
-		dipsw |= (MENU_CYCLE_VALUE(&topmenu[10]) & 0x1) << 30; //11
+		dipsw |= (MENU_CYCLE_VALUE(&topmenu[10]) & 0x1) << 32; //11
 		HW_HOST(REG_HOST_SW)=dipsw;	// Send the new values to the hardware.
 		// If the menu's visible, prevent keystrokes reaching the host core.
 		HW_HOST(REG_HOST_CONTROL)=(visible ?

@@ -109,6 +109,9 @@ port(
 	dm_sid        : out std_logic_vector(3 downto 0);
 	dm_sid_sample : out std_logic;
 	
+	--Palette
+	palette       : in std_logic;
+	
 	-- IEC
 	iec_data_o	: out std_logic;
 	iec_data_i	: in  std_logic;
@@ -388,7 +391,8 @@ port map (
 	index => vicColorIndex,
 	r => r,
 	g => g,
-	b => b
+	b => b,
+	palette => palette
 );
 
 -- -----------------------------------------------------------------------
