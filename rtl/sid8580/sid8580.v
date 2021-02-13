@@ -164,7 +164,7 @@ sid_filters filters
 	.voice2(voice_2),
 	.voice3(voice_3),
 	.input_valid(ce_1m),
-	.ext_in(12'hfff),
+	.ext_in(12'h0ff),
 	.sound(audio_data),
 	.extfilter_en(extfilter_en)
 );

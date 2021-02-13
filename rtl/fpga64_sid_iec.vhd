@@ -583,7 +583,7 @@ begin
 	end if;
 end process;
 
-audio_data  <= std_logic_vector(audio_6581) when sid_ver='0' else audio_8580;
+audio_data  <= std_logic_vector(unsigned(audio_6581 + 2 ** (audio_6581'length -1))) when sid_ver='0' else audio_8580;
 
 sid_we      <= pulseWrRam and phi0_cpu and cs_sid;
 sid_sel_int <= not sid_mode(1) or (not sid_mode(0) and not cpuAddr(5)) or (sid_mode(0) and not cpuAddr(8));

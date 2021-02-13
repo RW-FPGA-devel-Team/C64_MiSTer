@@ -223,7 +223,7 @@ localparam CONF_STR = {
 	"F4,PRG,Load File;",
 	"F5,CRT,Load Cartridge;",
 	"-;",
-	"F,TAP,Tape Load;",
+	"F,TAP,Tape Loader;",
 	"R7,Tape Play/Pause;",
 	"RN,Tape Unload;",
 	"OB,Tape Sound,Off,On;",
@@ -238,8 +238,8 @@ localparam CONF_STR = {
 	"OKM,SID Right addr,Same,DE00,D420,D500,DF00;",
 	"O6,Audio Filter,On,Off;",
 	"OC,Sound Expander,No,OPL2;",
-	"0U,Digimax,No,Yes;",
-	"0V,SID Digital to DigiMax;",	
+	"OU,Digimax,No,Yes;",
+	"OV,SID Digital to DigiMax,No,Yes;",	
 	"OIJ,Stereo Mix,None,25%,50%,100%;",
 	"-;",
 	"O3,Swap Joysticks,No,Yes;",
@@ -934,7 +934,7 @@ fpga64_sid_iec fpga64
 	.sid_we_ext(sid_we),
 	.sid_mode({status[22:21]==1,status[20]}),
 	.audio_data(audio_out),
-	.extfilter_en(~status[6]),
+	.extfilter_en(0),
 	.sid_ver(status[13]),
 	.dm_digi_sid(status[31]),
 	.dm_dac(dm_dac_l),
@@ -1238,7 +1238,7 @@ sid_top sid_6581
 	.wdata(c64_data_out),
 	.rdata(data_6581),
 
-	.extfilter_en(~status[6]),
+	.extfilter_en(0),
 	.sample_left(audio6581_r)
 );
 
@@ -1255,7 +1255,7 @@ sid8580 sid_8580
 	.data_in(c64_data_out),
 	.data_out(data_8580),
 
-	.extfilter_en(~status[6]),
+	.extfilter_en(0),
 	.audio_data(audio8580_r)
 );	
 
@@ -1275,7 +1275,7 @@ end
 
 assign AUDIO_L = alo;
 assign AUDIO_R = aro;
-assign AUDIO_S = 1;
+assign AUDIO_S = 0;
 assign AUDIO_MIX = status[19:18];
 `ifdef CYCLONE
 wire [15:0] AUDIO_L;
