@@ -188,6 +188,8 @@ signal keys_s : std_logic_vector(7 downto 0);
 signal joystick1 : std_logic_vector(7 downto 0);
 signal joystick2 : std_logic_vector(7 downto 0);
 
+signal CLK_AUDIO : std_logic := '0';
+
 	COMPONENT joydecoder
 		PORT
 		(
@@ -583,7 +585,7 @@ joy2 <= not joystick2(6 downto 0);
 audio : audio_sys  
 port map
 (
-	clk_audio => CLOCK_50,
+	clk_audio => CLK_AUDIO,
 	reset     => not reset_n,
 	L_data    => L_data,
 	R_data    => R_data,
@@ -595,6 +597,12 @@ port map
 	sigma_L   => sigma_L,
 	sigma_R   => sigma_R
 ); 
+process(clk)
+begin 
+ if rising_edge(clk) then
+  CLK_AUDIO <= not CLK_AUDIO;
+ end if;
+end process;
 ---	
 
 process(clk)
