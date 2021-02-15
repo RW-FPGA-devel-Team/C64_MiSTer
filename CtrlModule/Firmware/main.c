@@ -183,7 +183,7 @@ static char *st_stereomix[]=
 	"Mezcla Stereo No",
 	"Mezcla Stereo 25%",
 	"Mezcla Stereo 50%",
-	"Mezcla Stereo 75%"
+	"Mezcla Stereo 100%"
 };
 
 static char *st_dm[]=

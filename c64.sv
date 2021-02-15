@@ -1286,6 +1286,9 @@ assign AUDIO_MIX = status[19:18];
 `ifdef CYCLONE
 wire [15:0] AUDIO_L;
 wire [15:0] AUDIO_R;
+wire        AUDIO_S;   // 1 - signed audio samples, 0 - unsigned
+wire  [1:0] AUDIO_MIX; // 0 - no mix, 1 - 25%, 2 - 50%, 3 - 100% (mono)
+
 `endif	
 //------------- TAP -------------------
 
