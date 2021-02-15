@@ -156,10 +156,14 @@ always @(posedge clk32) begin
 
 		// Generic 8k(exrom=0,game=1), 16k(exrom=0,game=0), ULTIMAX(exrom=1,game=0)
 		0:	begin
-				exrom_overide <= cart_exrom[0];
-				game_overide <= cart_game[0];
-				bank_lo <= lobanks[0];
-				bank_hi <= hibanks[0];
+				if(!init_n) begin
+					exrom_overide <= cart_exrom[0];
+					game_overide <= cart_game[0];
+				end
+				if(ioe_wr) begin
+					bank_lo <= lobanks[0];
+					bank_hi <= hibanks[0];
+				end	
 			end
 
 		// Action Replay v4+ - (32k 4x8k banks + 8K RAM)
