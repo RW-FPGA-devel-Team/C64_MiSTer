@@ -348,6 +348,14 @@ pll pll
 	.c2(clk_sys),	
 	.locked(pll_locked)
 );	
+
+wire CLK_AUDIO;
+pll_audio pll_audio
+(
+	.inclk0(CLK_50M),
+	.c0(CLK_AUDIO)
+);	
+
 `endif
 
 reg reset_n;
@@ -467,7 +475,7 @@ assign VGA_BLANK = 1'b1;
 data_io data_io
 (
 	.clk(clk_sys),
-	.CLOCK_50(CLK_50M), //Para modulos de I2s y Joystick
+	.CLK_AUDIO(CLK_AUDIO), //Para modulos de I2s y Joystick
 	
 	.debug(),
 	

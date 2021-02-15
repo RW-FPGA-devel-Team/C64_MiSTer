@@ -15,7 +15,7 @@ entity data_io is
 	);
 	port (
 		clk 			: in std_logic;
-		CLOCK_50    : in std_logic;
+		CLK_AUDIO   : in std_logic;
 		
 		reset_n 	: in std_logic;
 		debug    : out std_logic;
@@ -188,7 +188,7 @@ signal keys_s : std_logic_vector(7 downto 0);
 signal joystick1 : std_logic_vector(7 downto 0);
 signal joystick2 : std_logic_vector(7 downto 0);
 
-signal CLK_AUDIO : std_logic := '0';
+--signal CLK_AUDIO : std_logic := '0';
 
 	COMPONENT joydecoder
 		PORT
@@ -570,7 +570,7 @@ port map
 joystick : joydecoder 
 port map
 (
-	clk        => CLOCK_50,
+	clk        => CLK_AUDIO,
 	JOY_CLK    => JOY_CLK,
 	JOY_LOAD   => JOY_LOAD,
 	JOY_DATA   => JOY_DATA,
@@ -597,12 +597,12 @@ port map
 	sigma_L   => sigma_L,
 	sigma_R   => sigma_R
 ); 
-process(clk)
-begin 
- if rising_edge(clk) then
-  CLK_AUDIO <= not CLK_AUDIO;
- end if;
-end process;
+--process(clk)
+--begin 
+-- if rising_edge(clk) then
+--  CLK_AUDIO <= not CLK_AUDIO;
+-- end if;
+--end process;
 ---	
 
 process(clk)
