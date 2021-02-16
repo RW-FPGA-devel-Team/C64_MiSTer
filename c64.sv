@@ -1380,7 +1380,7 @@ assign SRAM_UB_N   = 1'b1;
 image_controller image_controller1
 (
     
-		.clk_i			( clk_sys ), //clk_64 & ce_c1541 //clk_sys
+		.clk_i			( ~clk_sys ), //clk_64 & ce_c1541 //clk_sys
 		.reset_i		   ( ~reset_n ),
  	 
 		.sd_lba			( sd_lba1 ), //c1541_1_busy ? sd_lba1 : sd_lba2 ), 
