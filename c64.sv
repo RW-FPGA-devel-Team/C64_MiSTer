@@ -1363,14 +1363,14 @@ c1530 c1530
 
 `ifdef CYCLONE
 /// CAMBIOS
-wire dsk_wr;
+wire disk_we_s;
 wire [19:0] disk_addr_s;
-wire [7:0] disk_data_s;
+wire [7:0] disk_data_s,disk_data_wr_s;
 wire dsk_download  = ioctl_download && (ioctl_index == 8'h01) ? 1'b1 : 1'b0;
-assign SRAM_ADDR   = (dsk_download) ? ioctl_addr[19:0] : disk_addr_s; 
-assign SRAM_DATA   = (dsk_download) ? ioctl_data	: 8'bzzzzzzzz;
+assign SRAM_ADDR   = dsk_download ? ioctl_addr[19:0] : disk_addr_s; 
+assign SRAM_DATA   = dsk_download ? ioctl_data	     : disk_we_s ? disk_data_wr_s : 8'bzzzzzzzz;
 assign disk_data_s = SRAM_DATA;
-assign SRAM_WE_N   = ~(dsk_download & ioctl_wr);
+assign SRAM_WE_N   = dsk_download ? ~ioctl_wr : ~disk_we_s;
 assign SRAM_OE_N   = 1'b0;
 assign SRAM_LB_N   = 1'b0;
 assign SRAM_UB_N   = 1'b1;
@@ -1393,8 +1393,10 @@ image_controller image_controller1
 		.sd_buff_din	( sd_buff_din1 ), //c1541_1_busy ? sd_buff_din1 : sd_buff_din2 ),
 		.sd_buff_wr		( sd_buff_wr ),
 		
-		.sram_addr_o  	( disk_addr_s ),
-		.sram_data_i   ( disk_data_s )
+		.sram_addr_o    ( disk_addr_s ),
+		.sram_data_i    ( disk_data_s ),
+		.sram_data_o    ( disk_data_wr_s ),
+		.sram_we_o      ( disk_we_s )
 );
 `endif
 endmodule
