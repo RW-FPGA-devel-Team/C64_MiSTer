@@ -63,7 +63,7 @@ reg        IOF_wr_ena;
 
 reg    exrom_overide;
 reg    game_overide;
-reg cart_attached_d;
+
 assign exrom = ~cart_attached | exrom_overide;
 assign game  = ~cart_attached | game_overide;
 
@@ -74,7 +74,6 @@ reg  [7:0] bank_cnt;
 always @(posedge clk32) begin
 	reg old_loading;
 	old_loading <= cart_loading;
-	cart_attached_d <= cart_attached;
 	
 	if(~old_loading & cart_loading) bank_cnt <= 0;
 	if(cart_bank_wr) begin
@@ -158,13 +157,14 @@ always @(posedge clk32) begin
 
 		// Generic 8k(exrom=0,game=1), 16k(exrom=0,game=0), ULTIMAX(exrom=1,game=0)
 		0:	begin
-					exrom_overide <= cart_exrom[0];
-					game_overide <= cart_game[0];
-					bank_hi <= hibanks[0];
-				if(ioe_wr) begin
-					bank_lo <= lobanks[0];
-					
-				end	
+				exrom_overide <= cart_exrom[0];
+				game_overide <= cart_game[0];
+			`ifndef CYCLONE
+				bank_lo <= lobanks[0];
+			`else
+				if(ioe_wr) bank_lo <= lobanks[0];
+			`endif
+				bank_hi <= hibanks[0];
 			end
 
 		// Action Replay v4+ - (32k 4x8k banks + 8K RAM)
