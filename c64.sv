@@ -233,14 +233,13 @@ localparam CONF_STR = {
 	"OO,Video Format,Original,Wide;",
 	"O45,Aspect Ratio,Original,Full Screen,[ARC1],[ARC2];",
 	"O8A,Scandoubler Fx,None,HQ2x-320,HQ2x-160,CRT 25%,CRT 50%,CRT 75%;",
-	"O6,Color Palette,C64,CePeCe;",
+	"OUV,Color Palette,C64,CePeCe,Pepto,Comunity;",
 	"-;",
 	"OD,SID Left,6581,8580;",
 	"OG,SID Right,6581,8580;",
 	"OKM,SID Right addr,Same,DE00,D420,D500,DF00;",
 	"OC,Sound Expander,No,OPL2;",
-	"OU,Digimax,No,Yes;",
-	"OV,SID Digital to DigiMax,No,Yes;",	
+	"O6,Digimax,No,Yes;",
 	"OIJ,Stereo Mix,None,25%,50%,100%;",
 	"-;",
 	"O3,Swap Joysticks,No,Yes;",
@@ -883,8 +882,6 @@ wire  [7:0] r,g,b;
 wire        ntsc = status[2];
 
 wire [31:0] dm_dac;
-wire  [3:0] dm_sid, dm_sid2;
-wire dm_sid_sample, dm_sid_sample2;
 
 fpga64_sid_iec fpga64
 (
@@ -941,11 +938,8 @@ fpga64_sid_iec fpga64
 	.audio_data(audio_out),
 	.extfilter_en(0),
 	.sid_ver(status[13]),
-	.dm_digi_sid(status[31]),
 	.dm_dac(dm_dac),
-	.dm_sid(dm_sid),
-	.dm_sid_sample(dm_sid_sample),
-	.palette(status[6]),
+	.palette(status[31:30]),
 	.iec_data_o(c64_iec_data),
 	.iec_atn_o(c64_iec_atn),
 	.iec_clk_o(c64_iec_clk),
@@ -1233,19 +1227,20 @@ wire sid2_oe = (status[22:20]==1) ? IOE    : (status[22:20]==4) ? IOF    : ~IOE 
 
 wire [17:0] audio6581_r;
 wire  [7:0] data_6581;
-sid_top sid_6581
+sid6581 sid_6581
 (
-	.clock(clk_sys),
+	.clk_1MHz(ce_1m[31]),
+	.clk32(clk_sys),
 	.reset(~reset_n),
-	.start_iter(ce_1m[31]),
-
+   .cs(1),
+	.we(sid2_we),
 	.addr(c64_addr[4:0]),
-	.wren(sid2_we),
-	.wdata(c64_data_out),
-	.rdata(data_6581),
+	
+	.din(c64_data_out),
+	.dout(data_6581),
 
-	.extfilter_en(0),
-	.sample_left(audio6581_r)
+	.audio_data(audio6581_r),
+	.audio_out()
 );
 
 wire [17:0] audio8580_r;
@@ -1265,8 +1260,8 @@ sid8580 sid_8580
 	.audio_data(audio8580_r)
 );	
 
-wire [17:0] audio_r = status[31] & dm_sid_sample ? {{4{dm_sid}},2'b00} : status[16] ? status[30] ? audio8580_r + dm_dac[15:0] : audio8580_r : status[30] ? audio6581_r + dm_dac[15:0] : audio6581_r;
-wire [17:0] audio_l = status[31] & dm_sid_sample ? {{4{dm_sid}},2'b00} : status[30] ? audio_out + dm_dac[31:16] : audio_out;
+wire [17:0] audio_r = status[16] ? status[6] ? audio8580_r + dm_dac[15:0] : audio8580_r : status[6] ? audio6581_r + dm_dac[15:0] : audio6581_r;
+wire [17:0] audio_l = status[6] ? audio_out + dm_dac[31:16] : audio_out;
 
 
 reg [15:0] alo,aro;

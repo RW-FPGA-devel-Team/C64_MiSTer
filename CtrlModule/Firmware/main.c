@@ -148,7 +148,9 @@ static char *st_videoar[]=
 static char *st_paleta[]=
 {
 	"Paleta C64",
-	"Paleta CePeCeRa"
+	"Paleta CePeCeRa",
+	"Paleta Pepto",
+	"Paleta Comunity"
 };
 
 static char *st_sid_l[]=
@@ -251,7 +253,7 @@ static struct menu_entry vidmenu[]=
 	{MENU_ENTRY_CYCLE,(char *)st_videofrm,MENU_ACTION(2)},	
 	{MENU_ENTRY_CYCLE,(char *)st_videoar,MENU_ACTION(4)},	
 	{MENU_ENTRY_CYCLE,(char *)st_scanlines,MENU_ACTION(6)},	
-	{MENU_ENTRY_CYCLE,(char *)st_paleta,MENU_ACTION(2)},
+	{MENU_ENTRY_CYCLE,(char *)st_paleta,MENU_ACTION(4)},
 	{MENU_ENTRY_SUBMENU,"Exit",MENU_ACTION(topmenu)},
 	{MENU_ENTRY_NULL,0,0}
 };
@@ -264,7 +266,6 @@ static struct menu_entry audmenu[]=
 	{MENU_ENTRY_CYCLE,(char *)st_sndexp,MENU_ACTION(2)},
 	{MENU_ENTRY_CYCLE,(char *)st_stereomix,MENU_ACTION(4)},
 	{MENU_ENTRY_CYCLE,(char *)st_dm,MENU_ACTION(2)},
-	{MENU_ENTRY_CYCLE,(char *)st_sid_dm,MENU_ACTION(2)},
 	{MENU_ENTRY_SUBMENU,"Exit",MENU_ACTION(topmenu)},
 	{MENU_ENTRY_NULL,0,0}
 };
@@ -490,15 +491,14 @@ int main(int argc,char **argv)
 		dipsw |= (MENU_CYCLE_VALUE(&vidmenu[1])  & 0x1) << 24; //24 
 		dipsw |= (MENU_CYCLE_VALUE(&vidmenu[2])  & 0x3) << 4;  //5:4 	
 		dipsw |= (MENU_CYCLE_VALUE(&vidmenu[3])  & 0x7) << 8;  //10:8 
-		dipsw |= (MENU_CYCLE_VALUE(&vidmenu[4])  & 0x1) << 6;  //6
+		dipsw |= (MENU_CYCLE_VALUE(&vidmenu[4])  & 0x3) << 30; //31:30
 
 		dipsw |= (MENU_CYCLE_VALUE(&audmenu[0])  & 0x1) << 13; //13 
 		dipsw |= (MENU_CYCLE_VALUE(&audmenu[1])  & 0x1) << 16; //16 
 		dipsw |= (MENU_CYCLE_VALUE(&audmenu[2])  & 0x7) << 20; //22:20 
 		dipsw |= (MENU_CYCLE_VALUE(&audmenu[3])  & 0x1) << 12; //12 
 		dipsw |= (MENU_CYCLE_VALUE(&audmenu[4])  & 0x3) << 18; //19:18 
-		dipsw |= (MENU_CYCLE_VALUE(&audmenu[5])  & 0x1) << 30; //
-		dipsw |= (MENU_CYCLE_VALUE(&audmenu[6])  & 0x1) << 31; //
+		dipsw |= (MENU_CYCLE_VALUE(&audmenu[5])  & 0x1) <<  6; //6
 
 		dipsw |= (MENU_CYCLE_VALUE(&prtmenu[0])  & 0x1) << 3;  //3
 		dipsw |= (MENU_CYCLE_VALUE(&prtmenu[1])  & 0x1) << 1;  //1
