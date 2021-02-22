@@ -502,6 +502,11 @@ hps_io #(.STRLEN($size(CONF_STR)>>3), .VDNUM(2)) hps_io
 	.ioctl_wait(ioctl_req_wr)
 );
 `else
+reg  [11:0] HDMI_WIDTH  = 1920;
+reg  [11:0] HDMI_HEIGHT = 1080;
+reg  [11:0] VIDEO_ARX = 4;
+reg  [11:0] VIDEO_ARY = 3;
+reg         VGA_DE;
 wire [7:0]R_OSD,G_OSD,B_OSD;
 wire host_scandoubler;
 wire [7:0]R_IN = ~(hblank | vblank) ? r : 0;

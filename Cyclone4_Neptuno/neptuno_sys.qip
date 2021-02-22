@@ -4,4 +4,5 @@ set_global_assignment -name VERILOG_FILE       sys/scanlines.v
 set_global_assignment -name SYSTEMVERILOG_FILE sys/video_cleaner.sv
 set_global_assignment -name SYSTEMVERILOG_FILE sys/gamma_corr.sv
 set_global_assignment -name SYSTEMVERILOG_FILE sys/video_mixer.sv
+set_global_assignment -name SYSTEMVERILOG_FILE sys/video_crop.sv
 set_global_assignment -name QIP_FILE           Cyclone4_Neptuno/pll/pll.qip
