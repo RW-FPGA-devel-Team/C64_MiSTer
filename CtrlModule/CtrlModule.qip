@@ -13,6 +13,7 @@ set_global_assignment -name VHDL_FILE          ../CtrlModule/Firmware/CtrlROM_RO
 set_global_assignment -name VHDL_FILE          ../CtrlModule/ZPUFlex/zpu_core_flex.vhd
 set_global_assignment -name VHDL_FILE          ../CtrlModule/ZPUFlex/zpupkg.vhd
 set_global_assignment -name VERILOG_FILE       ../CtrlModule/modules/joydecoder_neptuno.v
+set_global_assignment -name VERILOG_FILE       ../CtrlModule/modules/ps2_mouse.v
 set_global_assignment -name VERILOG_FILE       ../CtrlModule/modules/csync.v
 set_global_assignment -name VERILOG_FILE       ../CtrlModule/modules/audio/audio_sys.v
 set_global_assignment -name VERILOG_FILE       ../CtrlModule/modules/audio/audio_out.v

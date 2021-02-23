@@ -215,6 +215,8 @@ module emu
 	
 	inout         PS2_CLK,
 	inout         PS2_DAT,
+	inout         PS2_MCLK,
+	inout         PS2_MDAT,	
 `ifndef JOYDC
 	output        JOY_CLK,
 	output        JOY_LOAD,
@@ -536,7 +538,11 @@ data_io data_io
 	
 	.ps2k_clk_in(PS2_CLK),
 	.ps2k_dat_in(PS2_DAT),
+	.ps2m_clk_in(PS2_MCLK),
+	.ps2m_dat_in(PS2_MDAT),
+	
 	.ps2_key(ps2_key),
+	.ps2_mouse(ps2_mouse),
 	.host_scandoubler_disable(host_scandoubler),
 	
 `ifndef JOYDC
