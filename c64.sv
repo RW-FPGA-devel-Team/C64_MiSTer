@@ -1144,6 +1144,7 @@ assign VGA_F1    = 0;
 
 wire [1:0] ar = status[5:4];
 
+`ifndef CYCLONE
 video_mixer #(.GAMMA(1)) video_mixer
 (
 	.clk_vid(CLK_VIDEO),
@@ -1154,19 +1155,13 @@ video_mixer #(.GAMMA(1)) video_mixer
 	.hq2x(~status[10] & (status[9] ^ status[8])),
 	.scandoubler(scandoubler),
 	.gamma_bus(gamma_bus),
-`ifndef CYCLONE
+
 	.R(r),
 	.G(g),
 	.B(b),
 	.VGA_VS(VGA_VS),
 	.VGA_HS(VGA_HS),	
-`else
-	.R(R_OSD),
-	.G(G_OSD),
-	.B(B_OSD),
-	.VGA_VS(vsync_o),
-	.VGA_HS(hsync_o),	
-`endif
+
 	.mono(0),
 
 	.HSync(hsync_out),
@@ -1179,6 +1174,32 @@ video_mixer #(.GAMMA(1)) video_mixer
 	.VGA_B(VGA_B),
 	.VGA_DE(VGA_DE)
 );
+
+`else
+mist_video #(.SD_HCNT_WIDTH(10),.COLOR_DEPTH(6)) mist_video
+(
+	.clk_sys(clk_sys),
+	.scanlines(status[9:8]),
+	.scandoubler_disable(~scandoubler),
+	.ypbpr(0),
+	.no_csync(1),
+	.rotate(0),
+	.blend(0),
+	.SPI_SCK(0),
+	.SPI_SS3(0),
+	.SPI_DI(0),
+
+	.VGA_HS(hsync_o),		
+	.VGA_VS(vsync_o),
+	.R(R_OSD),
+	.G(G_OSD),
+	.B(B_OSD),
+	
+	.VGA_R(VGA_R),
+	.VGA_G(VGA_G),
+	.VGA_B(VGA_B)
+);
+`endif
 
 `ifdef CYCLONE
 reg hsync_o, vsync_o, csync_o, csync_en;
@@ -1239,25 +1260,25 @@ sid6581 sid_6581
 	.din(c64_data_out),
 	.dout(data_6581),
 
-	.audio_data(audio6581_r),
-	.audio_out()
+	.audio_6581(audio6581_r)
 );
+
 
 wire [17:0] audio8580_r;
 wire  [7:0] data_8580;
 sid8580 sid_8580
 (
-	.clk(clk_sys),
+	.clk_1MHz(ce_1m[31]),
+	.clk32(clk_sys),
 	.reset(~reset_n),
-	.ce_1m(ce_1m[31]),
-
-	.addr(c64_addr[4:0]),
+   .cs(1),
 	.we(sid2_we),
-	.data_in(c64_data_out),
-	.data_out(data_8580),
+	.addr(c64_addr[4:0]),
 
-	.extfilter_en(0),
-	.audio_data(audio8580_r)
+	.din(c64_data_out),
+	.dout(data_8580),
+
+	.audio_8580(audio8580_r)
 );	
 
 wire [17:0] audio_r = status[16] ? status[6] ? audio8580_r + dm_dac[15:0] : audio8580_r : status[6] ? audio6581_r + dm_dac[15:0] : audio6581_r;

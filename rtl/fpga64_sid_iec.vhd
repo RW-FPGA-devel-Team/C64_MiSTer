@@ -91,13 +91,13 @@ port(
 	joyB        : in  std_logic_vector(6 downto 0);
 	joyC        : in  std_logic_vector(6 downto 0);
 	joyD        : in  std_logic_vector(6 downto 0);
-	pot1        : in  std_logic_vector(7 downto 0);
-	pot2        : in  std_logic_vector(7 downto 0);
-	pot3        : in  std_logic_vector(7 downto 0);
-	pot4        : in  std_logic_vector(7 downto 0);
+	pot1        : in  unsigned(7 downto 0);
+	pot2        : in  unsigned(7 downto 0);
+	pot3        : in  unsigned(7 downto 0);
+	pot4        : in  unsigned(7 downto 0);
 
 	--Connector to the SID
-	audio_data  : out std_logic_vector(17 downto 0);
+	audio_data  : out unsigned(17 downto 0);
 	extfilter_en: in  std_logic;
 	sid_ver     : in  std_logic;
 	sid_we_ext  : out std_logic;
@@ -233,17 +233,17 @@ signal colorData    : unsigned(3 downto 0);
 signal colorDataAec : unsigned(3 downto 0);
 
 -- SID signals
-signal sid_do       : std_logic_vector(7 downto 0);
-signal sid_do6581   : std_logic_vector(7 downto 0);
-signal sid_do8580   : std_logic_vector(7 downto 0);
+signal sid_do       : unsigned(7 downto 0);
+signal sid_do6581   : unsigned(7 downto 0);
+signal sid_do8580   : unsigned(7 downto 0);
 signal sid_we       : std_logic;
 signal sid_sel_int  : std_logic;
-signal audio_6581   : std_logic_vector(17 downto 0);
-signal pot_x1       : std_logic_vector(7 downto 0);
-signal pot_y1       : std_logic_vector(7 downto 0);
-signal pot_x2       : std_logic_vector(7 downto 0);
-signal pot_y2       : std_logic_vector(7 downto 0);
-signal audio_8580   : std_logic_vector(17 downto 0);
+signal pot_x1       : unsigned(7 downto 0);
+signal pot_y1       : unsigned(7 downto 0);
+signal pot_x2       : unsigned(7 downto 0);
+signal pot_y2       : unsigned(7 downto 0);
+signal audio_6581   : unsigned(17 downto 0);
+signal audio_8580   : unsigned(17 downto 0);
 
 signal clk_1MHz     : std_logic_vector(31 downto 0);
 
@@ -260,22 +260,6 @@ component DigiMax
 		dac_3    : out std_logic_vector(7 downto 0)			
  );
 end component DigiMax;
-
-component sid8580
-	port (
-		reset         : in std_logic;
-		clk           : in std_logic;
-		ce_1m         : in std_logic;
-		we            : in std_logic;
-		addr          : in std_logic_vector(4 downto 0);
-		data_in       : in std_logic_vector(7 downto 0);
-		data_out      : out std_logic_vector(7 downto 0);
-		pot_x         : in std_logic_vector(7 downto 0);
-		pot_y         : in std_logic_vector(7 downto 0);
-		audio_data    : out std_logic_vector(17 downto 0);
-		extfilter_en  : in std_logic
-  );
-end component sid8580;
 
 component mos6526
 	PORT (
@@ -581,12 +565,12 @@ begin
 	end if;
 end process;
 
-audio_data  <= std_logic_vector(audio_6581) when sid_ver='0' else audio_8580;
+audio_data  <= audio_6581 when sid_ver='0' else audio_8580;
 
 sid_we      <= pulseWrRam and phi0_cpu and cs_sid;
 sid_sel_int <= not sid_mode(1) or (not sid_mode(0) and not cpuAddr(5)) or (sid_mode(0) and not cpuAddr(8));
 sid_we_ext  <= sid_we and (not sid_mode(1) or not sid_sel_int);
-sid_do      <= std_logic_vector(io_data) when sid_sel_int = '0' else sid_do6581 when sid_ver='0' else sid_do8580;
+sid_do      <= io_data when sid_sel_int = '0' else sid_do6581 when sid_ver='0' else sid_do8580;
 
 pot_x1 <= (others => '1' ) when cia1_pao(6) = '0' else not pot1;
 pot_y1 <= (others => '1' ) when cia1_pao(6) = '0' else not pot2;
@@ -601,31 +585,34 @@ port map (
 	cs    => '1',
 	we   => sid_we and sid_sel_int,	
 
-	addr => std_logic_vector(cpuAddr(4 downto 0)),
+	addr => cpuAddr(4 downto 0),
 
-	din => std_logic_vector(cpuDo),
+	din => cpuDo,
 	dout => sid_do6581,
 
 	pot_x => pot_x1 and pot_x2,
 	pot_y => pot_y1 and pot_y2,
 
-	audio_data => audio_6581,
-	audio_out  => open
+	audio_6581 => audio_6581
 );
 
-sid_8580 : sid8580
+sid_8580 : entity work.sid8580
 port map (
+	clk_1MHz => clk_1MHz(31),
+	clk32 => clk32,
 	reset => reset,
-	clk => clk32,
-	ce_1m => clk_1MHz(31),
-	we => sid_we and sid_sel_int,
-	addr => std_logic_vector(cpuAddr(4 downto 0)),
-	data_in => std_logic_vector(cpuDo),
-	data_out => sid_do8580,
+	cs    => '1',
+	we   => sid_we and sid_sel_int,	
+
+	addr => cpuAddr(4 downto 0),
+
+	din => cpuDo,
+	dout => sid_do8580,
+
 	pot_x => pot_x1 and pot_x2,
 	pot_y => pot_y1 and pot_y2,
-	audio_data => audio_8580,
-	extfilter_en => extfilter_en
+
+	audio_8580 => audio_8580
 );
 
 Digi : DigiMax
