@@ -1,0 +1,3 @@
+[submodule "rtl/cbm_sid"]
+	path = rtl/cbm_sid
+	url = https://github.com/RW-FPGA-devel-Team/cbm_sid.git
