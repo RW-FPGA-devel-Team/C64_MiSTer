@@ -1216,15 +1216,15 @@ scandoubler scandoubler_basic
 	// shifter video interface
 	.hs_in(hsync_out),
 	.vs_in(vsync_out),
-	.r_in(R_OSD[7:5]),
-	.g_in(G_OSD[7:5]),
-	.b_in(B_OSD[7:5]),
+	.r_in(R_OSD[7:4]),
+	.g_in(G_OSD[7:4]),
+	.b_in(B_OSD[7:4]),
 	// output interface
 	.hs_out(hsync_o),
 	.vs_out(vsync_o),
-	.r_out(VGA_OUT_R[7:5]),
-	.g_out(VGA_OUT_G[7:5]),
-	.b_out(VGA_OUT_B[7:5])
+	.r_out(VGA_OUT_R[7:4]),
+	.g_out(VGA_OUT_G[7:4]),
+	.b_out(VGA_OUT_B[7:4])
 );
 `endif
 

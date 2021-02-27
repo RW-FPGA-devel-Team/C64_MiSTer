@@ -118,8 +118,8 @@ static char *testpattern_labels[]=
 static char *st_scanlines[]=
 {
 	"Scandoubler Ninguno",
-	"Scandoubler HQ2x-320",
-	"Scandoubler HQ2x-160",
+//	"Scandoubler HQ2x-320",
+//	"Scandoubler HQ2x-160",
 	"Scandoubler CRT 25%",
 	"Scandoubler CRT 50%",
 	"Scandoubler CRT 75%"
@@ -252,7 +252,7 @@ static struct menu_entry vidmenu[]=
 	{MENU_ENTRY_CYCLE,(char *)st_video,MENU_ACTION(2)},	
 	{MENU_ENTRY_CYCLE,(char *)st_videofrm,MENU_ACTION(2)},	
 	{MENU_ENTRY_CYCLE,(char *)st_videoar,MENU_ACTION(4)},	
-	{MENU_ENTRY_CYCLE,(char *)st_scanlines,MENU_ACTION(6)},	
+	{MENU_ENTRY_CYCLE,(char *)st_scanlines,MENU_ACTION(4)},	
 	{MENU_ENTRY_CYCLE,(char *)st_paleta,MENU_ACTION(4)},
 	{MENU_ENTRY_SUBMENU,"Exit",MENU_ACTION(topmenu)},
 	{MENU_ENTRY_NULL,0,0}
@@ -490,7 +490,7 @@ int main(int argc,char **argv)
 		dipsw |= (MENU_CYCLE_VALUE(&vidmenu[0])  & 0x1) << 2;  //2 
 		dipsw |= (MENU_CYCLE_VALUE(&vidmenu[1])  & 0x1) << 24; //24 
 		dipsw |= (MENU_CYCLE_VALUE(&vidmenu[2])  & 0x3) << 4;  //5:4 	
-		dipsw |= (MENU_CYCLE_VALUE(&vidmenu[3])  & 0x7) << 8;  //10:8 
+		dipsw |= (MENU_CYCLE_VALUE(&vidmenu[3])  & 0x3) << 8;  //9:8 
 		dipsw |= (MENU_CYCLE_VALUE(&vidmenu[4])  & 0x3) << 30; //31:30
 
 		dipsw |= (MENU_CYCLE_VALUE(&audmenu[0])  & 0x1) << 13; //13 

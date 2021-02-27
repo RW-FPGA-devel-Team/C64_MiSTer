@@ -29,16 +29,16 @@ module scandoubler
 	// shifter video interface
 	input            hs_in,
 	input            vs_in,
-	input      [3:0] r_in,
-	input      [3:0] g_in,
-	input      [3:0] b_in,
+	input      [2:0] r_in,
+	input      [2:0] g_in,
+	input      [2:0] b_in,
 
 	// output interface
 	output reg       hs_out,
 	output reg       vs_out,
-	output reg [3:0] r_out,
-	output reg [3:0] g_out,
-	output reg [3:0] b_out
+	output reg [2:0] r_out,
+	output reg [2:0] g_out,
+	output reg [2:0] b_out
 );
 
 // try to detect changes in input signal and lock input clock gate

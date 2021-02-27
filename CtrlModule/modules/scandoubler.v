@@ -27,11 +27,11 @@ module scandoubler
 	input      [1:0] scanlines,
 
 	// shifter video interface
-	input            hs_in,
-	input            vs_in,
-	input      [3:0] r_in,
-	input      [3:0] g_in,
-	input      [3:0] b_in,
+	input wire       hs_in,
+	input wire       vs_in,
+	input wire [3:0] r_in,
+	input wire [3:0] g_in,
+	input wire [3:0] b_in,
 
 	// output interface
 	output reg       hs_out,
@@ -74,11 +74,11 @@ always @(posedge clk_sys) begin
 		if(hs_out && !hs_sd) scanline <= !scanline;
 
 		// if no scanlines or not a scanline
-		//if(!scanline || !scanlines) begin
-			r_out <= { sd_out[8:6] };
-			g_out <= { sd_out[5:3] };
-			b_out <= { sd_out[2:0] };
-/*		end else begin
+		if(!scanline || !scanlines) begin
+			r_out <= { sd_out[11:8] };
+			g_out <= { sd_out[7:4] };
+			b_out <= { sd_out[3:0] };
+		end else begin
 			case(scanlines)
 				1: begin // reduce 25% = 1/2 + 1/4
 					r_out <= {1'b0, sd_out[10:9], 1'b0} + {2'b00, sd_out[10:9]};
@@ -98,19 +98,19 @@ always @(posedge clk_sys) begin
 					b_out <= {2'b00, sd_out[2:1]};
 				end
 			endcase
-		end*/
+		end
 	end
 end
 
 // scan doubler output register
-reg [8:0] sd_out;
+reg [11:0] sd_out;
 
 // ==================================================================
 // ======================== the line buffers ========================
 // ==================================================================
 
 // 2 lines of 512 pixels 3*6 bit RGB
-(* ramstyle = "no_rw_check" *) reg [8:0] sd_buffer[0:2047];
+(* ramstyle = "no_rw_check" *) reg [11:0] sd_buffer[0:1023];
 
 // use alternating sd_buffers when storing/reading data   
 reg        line_toggle;
