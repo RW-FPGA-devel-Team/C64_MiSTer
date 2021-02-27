@@ -1177,7 +1177,8 @@ video_mixer #(.GAMMA(1)) video_mixer
 );
 
 `else
-mist_video #(.SD_HCNT_WIDTH(10),.COLOR_DEPTH(6)) mist_video
+/*
+mist_video #(.SD_HCNT_WIDTH(10),.COLOR_DEPTH(5)) mist_video
 (
 	.clk_sys(CLK_VIDEO),
 	.scanlines(2'b00),//status[9:8]),
@@ -1202,16 +1203,43 @@ mist_video #(.SD_HCNT_WIDTH(10),.COLOR_DEPTH(6)) mist_video
 	.VGA_G(VGA_G),
 	.VGA_B(VGA_B)
 );
+
+*/
+wire [7:0] VGA_OUT_R;
+wire [7:0] VGA_OUT_G;
+wire [7:0] VGA_OUT_B;
+scandoubler scandoubler_basic
+(
+	.clk_sys(CLK_VIDEO),
+	// scanlines (00-none 01-25% 10-50% 11-75%)
+	.scanlines(status[9:8]),
+	// shifter video interface
+	.hs_in(hsync_out),
+	.vs_in(vsync_out),
+	.r_in(R_OSD[7:5]),
+	.g_in(G_OSD[7:5]),
+	.b_in(B_OSD[7:5]),
+	// output interface
+	.hs_out(hsync_o),
+	.vs_out(vsync_o),
+	.r_out(VGA_OUT_R[7:5]),
+	.g_out(VGA_OUT_G[7:5]),
+	.b_out(VGA_OUT_B[7:5])
+);
 `endif
 
 `ifdef CYCLONE
 reg hsync_o, vsync_o, csync_o, csync_en;
 
-csync csync_gen (.clk(CLK_VIDEO), .hsync(hsync_o), .vsync(vsync_o), .csync(csync_o));
+//csync csync_gen (.clk(CLK_VIDEO), .hsync(hsync_o), .vsync(vsync_o), .csync(csync_o));
+csync csync_gen (.clk(CLK_VIDEO), .hsync(hsync_out), .vsync(vsync_out), .csync(csync_o));
 
 assign csync_en = !scandoubler;
 assign VGA_VS = csync_en ? 1'b1     : ~vsync_o;
 assign VGA_HS = csync_en ? ~csync_o : ~hsync_o; //~ en el orignal de Mister van Negadas
+assign VGA_R  = csync_en ? R_OSD    : VGA_OUT_R;
+assign VGA_G  = csync_en ? G_OSD    : VGA_OUT_G;
+assign VGA_B  = csync_en ? B_OSD    : VGA_OUT_B;
 
 `endif
 
