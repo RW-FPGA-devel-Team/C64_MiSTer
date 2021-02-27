@@ -222,6 +222,7 @@ localparam CONF_STR = {
 	"OP,Enable Drive #9,No,Yes;",
 	"-;",
 	"F4,PRG,Load File;",
+	"O7,PRG Autorun,Off,On;",
 	"F5,CRT,Load Cartridge;",
 	"-;",
 	"F,TAP,Tape Loader;",
@@ -777,7 +778,7 @@ always @(posedge clk_sys) begin
 	end
 
 `ifndef CYCLONE //Evita que autoescriba RUN despues de cargar PRGs (provoca fallos en algunos)
-	start_strk <= (old_meminit && !inj_meminit);
+	start_strk <= status[7] ? (old_meminit && !inj_meminit) : 1'b0;
 `endif
 	
 	old_st0 <= status[0];
@@ -1178,8 +1179,8 @@ video_mixer #(.GAMMA(1)) video_mixer
 `else
 mist_video #(.SD_HCNT_WIDTH(10),.COLOR_DEPTH(6)) mist_video
 (
-	.clk_sys(clk_sys),
-	.scanlines(status[9:8]),
+	.clk_sys(CLK_VIDEO),
+	.scanlines(2'b00),//status[9:8]),
 	.scandoubler_disable(~scandoubler),
 	.ypbpr(0),
 	.no_csync(1),
@@ -1189,12 +1190,14 @@ mist_video #(.SD_HCNT_WIDTH(10),.COLOR_DEPTH(6)) mist_video
 	.SPI_SS3(0),
 	.SPI_DI(0),
 
-	.VGA_HS(hsync_o),		
-	.VGA_VS(vsync_o),
+	.HSync(hsync_out),		
+	.VSync(vsync_out),
 	.R(R_OSD),
 	.G(G_OSD),
 	.B(B_OSD),
-	
+
+	.VGA_HS(hsync_o),		
+	.VGA_VS(vsync_o),	
 	.VGA_R(VGA_R),
 	.VGA_G(VGA_G),
 	.VGA_B(VGA_B)
