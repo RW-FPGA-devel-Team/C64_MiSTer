@@ -1,4 +1,2 @@
-#set_global_assignment -name VHDL_FILE          rtl/fpga64_scandoubler.vhd
-#set_global_assignment -name VHDL_FILE          rtl/gen_rwram.vhd
 set_global_assignment -name VERILOG_FILE       CtrlModule/modules/scandoubler.v
 set_global_assignment -name QIP_FILE           Cyclone4_Neptuno/pll/pll.qip
