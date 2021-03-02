@@ -131,6 +131,7 @@ set_location_assignment PIN_M19 -to PS2_CLK
 set_location_assignment PIN_M20 -to PS2_DAT
 set_location_assignment PIN_N20 -to PS2_MCLK
 set_location_assignment PIN_N19 -to PS2_MDAT
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to PS2_*
 
 #AUDIO_IN
 set_location_assignment PIN_A20 -to AUDIO_IN
@@ -158,6 +159,7 @@ set_location_assignment PIN_B5 -to JOYSTICK2[4]
 set_location_assignment PIN_B4 -to JOYSTICK2[5]
 
 set_location_assignment PIN_A15 -to JOY_SELECT
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to JOYSTICK*
 
 #I2s
 set_location_assignment PIN_E22 -to SCLK

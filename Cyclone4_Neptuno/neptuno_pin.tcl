@@ -128,6 +128,9 @@ set_location_assignment PIN_B2 -to VGA_VS
 #PS2
 set_location_assignment PIN_N19 -to PS2_CLK
 set_location_assignment PIN_N20 -to PS2_DAT
+set_location_assignment PIN_C21 -to PS2_MCLK
+set_location_assignment PIN_B21 -to PS2_MDAT
+set_instance_assignment -name WEAK_PULL_UP_RESISTOR ON -to PS2_*
 
 #UART
 set_location_assignment PIN_K21 -to UART_RX
