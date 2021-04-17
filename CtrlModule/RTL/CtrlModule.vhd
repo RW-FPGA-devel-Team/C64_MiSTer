@@ -623,13 +623,12 @@ img_size <= x"00000000" & size;
 img_readonly<=dipswitches(30);
 status(0)<=host_rstcrt;
 status(1)<=not dipswitches(1); --UART Por defecto, al reves que en la mister 
-status(6 downto 2)<=dipswitches(6 downto 2);
+status(5 downto 2)<=dipswitches(5 downto 2);
+status(6)<=host_unloadtap;
 status(7)<=host_play;
 status(16 downto 8)<=dipswitches(16 downto 8);
 status(17)<=host_reset;
-status(22 downto 18)<=dipswitches(22 downto 18);
-status(23)<=host_unloadtap;
-status(31 downto 24)<=dipswitches(31 downto 24);
+status(31 downto 18)<=dipswitches(31 downto 18);
 
 debug <= '1';
 

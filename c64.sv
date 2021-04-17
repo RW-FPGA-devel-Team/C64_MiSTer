@@ -227,7 +227,7 @@ localparam CONF_STR = {
 	"-;",
 	"F,TAP,Tape Loader;",
 	"R7,Tape Play/Pause;",
-	"RN,Tape Unload;",
+	"R6,Tape Unload;",
 	"OB,Tape Sound,Off,On;",
 	"-;",
 	"O2,Video Standard,PAL,NTSC;",
@@ -238,9 +238,9 @@ localparam CONF_STR = {
 	"-;",
 	"OD,SID Left,6581,8580;",
 	"OG,SID Right,6581,8580;",
-	"OKM,SID Right addr,Same,DE00,D420,D500,DF00;",
+	"OMN,SID Right addr,Same,D420,D500;",
+	"OKL,Digimax,,Off,DE00,DF00;",
 	"OC,Sound Expander,No,OPL2;",
-	"O6,Digimax,No,Yes;",
 	"OIJ,Stereo Mix,None,25%,50%,100%;",
 	"-;",
 	"O3,Swap Joysticks,No,Yes;",
@@ -934,12 +934,13 @@ fpga64_sid_iec fpga64
 
 	.io_cycle(io_cycle),
 	.idle(idle),
-	.sid_we_ext(sid_we),
-	.sid_mode({status[22:21]==1,status[20]}),
-	.audio_data(audio_out),
-	.extfilter_en(0),
-	.sid_ver(status[13]),
-	.dm_dac(dm_dac),
+
+	.audio_data_l(audio_l),
+	.audio_data_r(audio_r),
+	.digimax_en(status[23:22]),
+	.sid_mode({status[16],status[13]}),
+	.sid_addr(status[21:20]),
+
 	.palette(status[31:30]),
 	.iec_data_o(c64_iec_data),
 	.iec_atn_o(c64_iec_atn),
@@ -1260,61 +1261,8 @@ opl3 #(.OPLCLK(47291931)) opl_inst
 	.sample_l(opl_out)
 );
 
-reg [31:0] ce_1m;
-always @(posedge clk_sys) ce_1m <= reset_n ? {ce_1m[30:0], ce_1m[31]} : 1;
-
-reg ioe_we, iof_we;
-always @(posedge clk_sys) begin
-	reg old_ioe, old_iof;
-
-	old_ioe <= IOE;
-	ioe_we <= ~old_ioe & IOE & ~ram_we;
-
-	old_iof <= IOF;
-	iof_we <= ~old_iof & IOF & ~ram_we;
-end
-
-wire sid2_we = (status[22:20]==1) ? ioe_we : (status[22:20]==4) ? iof_we : sid_we;
-wire sid2_oe = (status[22:20]==1) ? IOE    : (status[22:20]==4) ? IOF    : ~IOE & ~IOF;
-
-wire [17:0] audio6581_r;
-wire  [7:0] data_6581;
-sid6581 sid_6581
-(
-	.clk_1MHz(ce_1m[31]),
-	.clk32(clk_sys),
-	.reset(~reset_n),
-   .cs(1),
-	.we(sid2_we),
-	.addr(c64_addr[4:0]),
-	
-	.din(c64_data_out),
-	.dout(data_6581),
-
-	.audio_6581(audio6581_r)
-);
-
-
-wire [17:0] audio8580_r;
-wire  [7:0] data_8580;
-sid8580 sid_8580
-(
-	.clk_1MHz(ce_1m[31]),
-	.clk32(clk_sys),
-	.reset(~reset_n),
-   .cs(1),
-	.we(sid2_we),
-	.addr(c64_addr[4:0]),
-
-	.din(c64_data_out),
-	.dout(data_8580),
-
-	.audio_8580(audio8580_r)
-);	
-
-wire [17:0] audio_r = status[16] ? status[6] ? audio8580_r + dm_dac[15:0] : audio8580_r : status[6] ? audio6581_r + dm_dac[15:0] : audio6581_r;
-wire [17:0] audio_l = status[6] ? audio_out + dm_dac[31:16] : audio_out;
-
+wire [17:0] audio_l;
+wire [17:0] audio_r;
 
 reg [15:0] alo,aro;
 always @(posedge clk_sys) begin
@@ -1341,7 +1289,7 @@ wire  [1:0] AUDIO_MIX; // 0 - no mix, 1 - 25%, 2 - 50%, 3 - 100% (mono)
 
 reg [24:0] tap_play_addr;
 reg [24:0] tap_last_addr;
-wire       tap_reset = ~reset_n | tape_download | status[23] | (cass_motor & ((tap_last_addr - tap_play_addr) < 80));
+wire       tap_reset = ~reset_n | tape_download | status[6] | (cass_motor & ((tap_last_addr - tap_play_addr) < 80));
 reg        tap_wrreq;
 wire       tap_wrfull;
 wire       tap_finish;
