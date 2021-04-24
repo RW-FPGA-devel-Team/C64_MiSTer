@@ -239,7 +239,7 @@ localparam CONF_STR = {
 	"OD,SID Left,6581,8580;",
 	"OG,SID Right,6581,8580;",
 	"OMN,SID Right addr,Same,D420,D500;",
-	"OKL,Digimax,,Off,DE00,DF00;",
+	"OKL,Digimax,Off,DE00,DF00;",
 	"OC,Sound Expander,No,OPL2;",
 	"OIJ,Stereo Mix,None,25%,50%,100%;",
 	"-;",
@@ -937,9 +937,9 @@ fpga64_sid_iec fpga64
 
 	.audio_data_l(audio_l),
 	.audio_data_r(audio_r),
-	.digimax_en(status[23:22]),
+	.digimax_en(status[21:20]),
 	.sid_mode({status[16],status[13]}),
-	.sid_addr(status[21:20]),
+	.sid_addr(status[23:22]),
 
 	.palette(status[31:30]),
 	.iec_data_o(c64_iec_data),
@@ -1276,7 +1276,7 @@ end
 
 assign AUDIO_L = alo;
 assign AUDIO_R = aro;
-assign AUDIO_S = 0;
+assign AUDIO_S = 1;
 assign AUDIO_MIX = status[19:18];
 `ifdef CYCLONE
 wire [15:0] AUDIO_L;

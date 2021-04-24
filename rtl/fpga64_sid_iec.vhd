@@ -91,10 +91,10 @@ port(
 	joyB        : in  std_logic_vector(6 downto 0);
 	joyC        : in  std_logic_vector(6 downto 0);
 	joyD        : in  std_logic_vector(6 downto 0);
-	pot1        : in  unsigned(7 downto 0);
-	pot2        : in  unsigned(7 downto 0);
-	pot3        : in  unsigned(7 downto 0);
-	pot4        : in  unsigned(7 downto 0);
+	pot1        : in  std_logic_vector(7 downto 0);
+	pot2        : in  std_logic_vector(7 downto 0);
+	pot3        : in  std_logic_vector(7 downto 0);
+	pot4        : in  std_logic_vector(7 downto 0);
 
 	--Connector to the SID
 	audio_data_l: out std_logic_vector(17 downto 0);
@@ -231,14 +231,18 @@ signal colorDataAec : unsigned(3 downto 0);
 
 -- SID signals
 signal sid_do       : unsigned(7 downto 0);
-signal sid_do6581   : unsigned(7 downto 0);
-signal sid_do8580   : unsigned(7 downto 0);
+signal sid_do_left  : unsigned(7 downto 0);
+signal sid_do_right : unsigned(7 downto 0);
 signal second_sid_en: std_logic;
 signal sid_same     : std_logic;
+signal sid_left_cs  : std_logic;
+signal sid_right_cs : std_logic;
+signal sid_we       : std_logic;
 
-signal audio_left      : signed(17 downto 0);
-signal audio_right : signed(17 downto 0);
-signal digimax_wr   : std_logic;
+
+signal audio_left  : std_logic_vector(17 downto 0);
+signal audio_right : std_logic_vector(17 downto 0);
+signal digimax_wr  : std_logic;
 signal dac_0       : std_logic_vector(7 downto 0);
 signal dac_1       : std_logic_vector(7 downto 0);
 signal dac_2       : std_logic_vector(7 downto 0);
@@ -247,10 +251,10 @@ signal dac_data_l  : std_logic_vector(17 downto 0);
 signal dac_data_r  : std_logic_vector(17 downto 0);
 
 
-signal pot_x1       : unsigned(7 downto 0);
-signal pot_y1       : unsigned(7 downto 0);
-signal pot_x2       : unsigned(7 downto 0);
-signal pot_y2       : unsigned(7 downto 0);
+signal pot_x1       : std_logic_vector(7 downto 0);
+signal pot_y1       : std_logic_vector(7 downto 0);
+signal pot_x2       : std_logic_vector(7 downto 0);
+signal pot_y2       : std_logic_vector(7 downto 0);
 
 signal clk_1MHz     : std_logic_vector(31 downto 0);
 
@@ -281,33 +285,55 @@ component mos6526
 	);
 end component; 
 
-component cbm_sid
+--component cbm_sid
+--		port (
+--			reset    : in std_logic;
+--			clk32    : in std_logic;
+--			clk_1MHz : in std_logic;
+--
+--			sid1_cs       : in std_logic;
+--		   sid2_cs       : in std_logic;
+--			sid1_we       : in std_logic;
+--			sid2_we       : in std_logic;
+--			sid1_addr     : in unsigned(4 downto 0);
+--			sid2_addr     : in unsigned(4 downto 0);
+--			sid1_din      : in unsigned(7 downto 0);
+--			sid2_din      : in unsigned(7 downto 0);
+--			sid1_dout     : out unsigned(7 downto 0);
+--			sid2_dout     : out unsigned(7 downto 0);
+--			sid1_pot_x    : in unsigned(7 downto 0);
+--			sid2_pot_x    : in unsigned(7 downto 0);
+--			sid1_pot_y    : in unsigned(7 downto 0);
+--			sid2_pot_y    : in unsigned(7 downto 0);
+--			sid1_mode     : in std_logic;
+--			sid2_mode     : in std_logic;
+--			sid1_audio_data: out signed(17 downto 0);
+--			sid2_audio_data: out signed(17 downto 0)
+--	  );
+--	end component cbm_sid;
+	component sid_top
 		port (
-			reset    : in std_logic;
-			clk32    : in std_logic;
-			clk_1MHz : in std_logic;
+			reset         : in  std_logic;
+			clk           : in  std_logic;
+			ce_1m         : in  std_logic;
+			we            : in  std_logic;
+			addr          : in  unsigned(4 downto 0);
+			data_in       : in  unsigned(7 downto 0);
+			data_out      : out unsigned(7 downto 0);
+			pot_x         : in  std_logic_vector(7 downto 0);
+			pot_y         : in  std_logic_vector(7 downto 0);
+			audio_data    : out std_logic_vector(17 downto 0);
+			filter_en     : in  std_logic;
 
-			sid1_cs       : in std_logic;
-		   sid2_cs       : in std_logic;
-			sid1_we       : in std_logic;
-			sid2_we       : in std_logic;
-			sid1_addr     : in unsigned(4 downto 0);
-			sid2_addr     : in unsigned(4 downto 0);
-			sid1_din      : in unsigned(7 downto 0);
-			sid2_din      : in unsigned(7 downto 0);
-			sid1_dout     : out unsigned(7 downto 0);
-			sid2_dout     : out unsigned(7 downto 0);
-			sid1_pot_x    : in unsigned(7 downto 0);
-			sid2_pot_x    : in unsigned(7 downto 0);
-			sid1_pot_y    : in unsigned(7 downto 0);
-			sid2_pot_y    : in unsigned(7 downto 0);
-			sid1_mode     : in std_logic;
-			sid2_mode     : in std_logic;
-			sid1_audio_data: out signed(17 downto 0);
-			sid2_audio_data: out signed(17 downto 0)
+			mode          : in  std_logic
+--			cfg           : in  std_logic_vector(2 downto 0);
+--			ld_clk        : in  std_logic;
+--			ld_addr       : in  std_logic_vector(11 downto 0);
+--			ld_data       : in  std_logic_vector(15 downto 0);
+--			ld_wr         : in  std_logic
 	  );
-	end component cbm_sid;
-	
+	 end component;
+	 
 	 component DigiMax
 		 port (
 			clk      : in std_logic;
@@ -600,8 +626,8 @@ begin
 	end if;
 end process;
 
-audio_data_l <= std_logic_vector(audio_left)  + dac_data_l;
-audio_data_r <= std_logic_vector(audio_right) + dac_data_r;
+audio_data_l <= audio_left  + dac_data_l;
+audio_data_r <= audio_right + dac_data_r;
 
 pot_x1 <= (others => '1' ) when cia1_pao(6) = '0' else not pot1;
 pot_y1 <= (others => '1' ) when cia1_pao(6) = '0' else not pot2;
@@ -613,46 +639,59 @@ second_sid_en <= '0' when sid_addr="00" and cpuAddr(11 downto 8) = x"4" and  cpu
                  '1' when sid_addr="10" and cpuAddr(11 downto 8) = x"5"  else  -- $500
                  '0';
 
-sid_do   <= sid_do6581 when second_sid_en = '0' else sid_do8580;
+sid_do   <= sid_do_left when second_sid_en = '0' else sid_do_right;
 sid_same <= '1' when sid_addr="00" else '0';
 
-	dual_sid : cbm_sid
-	port map (
-		reset => reset,
-		clk32 => clk32,
-		clk_1MHz => clk_1MHz(31),
-		sid1_cs => cs_sid and (not second_sid_en or sid_same),
-		sid1_we => pulseWrRam and phi0_cpu,
-		sid1_addr => unsigned(cpuAddr(4 downto 0)),
-		sid1_din => unsigned(cpuDo),
-		sid1_dout => sid_do6581,
-		sid1_pot_x => pot_x1 and pot_x2,
-		sid1_pot_y => pot_y1 and pot_y2,
-		sid1_mode => sid_mode(0),  -- mode 0 = 6581, 1 = 8580
-		sid1_audio_data => audio_left,
-		--
-		sid2_cs => cs_sid and (second_sid_en or sid_same),
-		sid2_we => pulseWrRam and phi0_cpu,
-		sid2_addr => unsigned(cpuAddr(4 downto 0)),
-		sid2_din => unsigned(cpuDo),
-		sid2_dout => sid_do8580,
-		sid2_pot_x => pot_x1 and pot_x2,
-		sid2_pot_y => pot_y1 and pot_y2,
-		sid2_mode => sid_mode(1),  -- mode 0 = 6581, 1 = 8580
-		sid2_audio_data => audio_right
-	);
+sid_left_cs <= cs_sid and (not second_sid_en or sid_same);
+sid_right_cs <= cs_sid and (second_sid_en or sid_same);
+sid_we <= pulseWrRam and phi0_cpu;
+
+
+sid_l : sid_top
+port map (
+	reset => reset,
+	clk => clk32,
+	ce_1m => clk_1MHz(31),
+	we => sid_we and sid_left_cs,
+	addr => cpuAddr(4 downto 0),
+	data_in => cpuDo,
+	data_out => sid_do_left,
+	pot_x => pot_x1 and pot_x2,
+	pot_y => pot_y1 and pot_y2,
+	audio_data => audio_left,
+	filter_en => '1',
+	mode    => sid_mode(0)
+
+);
+
+sid_r : sid_top
+port map (
+	reset => reset,
+	clk => clk32,
+	ce_1m => clk_1MHz(31),
+	we => sid_we and sid_right_cs,
+	addr => cpuAddr(4 downto 0),
+	data_in => cpuDo,
+	data_out => sid_do_right,
+	pot_x => pot_x1 and pot_x2,
+	pot_y => pot_y1 and pot_y2,
+	audio_data => audio_right,
+	filter_en => '1',
+   mode    => sid_mode(0)
+
+);
 
   digimax_wr <= '1' when digimax_en="01" and cpuAddr(15 downto 8) = x"DE" else
                 '1' when digimax_en="10" and cpuAddr(15 downto 8) = x"DF" else
 					 '0';
 					 
-  dac_data_l  <= '0' & dac_0 & dac_1 & '0' when (digimax_en /= "00"); --else "000000000000000000";
-  dac_data_r  <= '0' & dac_2 & dac_3 & '0' when (digimax_en /= "00"); --else "000000000000000000";
+  dac_data_l  <= '0' & dac_0 & dac_1 & '0' when (digimax_en /= "00") else "000000000000000000";
+  dac_data_r  <= '0' & dac_2 & dac_3 & '0' when (digimax_en /= "00") else "000000000000000000";
 
 
   Digi : DigiMax
   port map (
-	  clk     => clk32,
+	       clk     => clk32,
 			 reset_n => reset_n,
 			 wr_n   => not (cpuWe and digimax_wr),
 			 addr   => std_logic_vector(cpuAddr(2 downto 0)),

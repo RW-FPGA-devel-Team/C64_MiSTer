@@ -33,7 +33,7 @@ end fpga64_rgbcolor;
 
 architecture Behavioral of fpga64_rgbcolor is
 begin
-	process(index)
+	process(index,palette)
 	begin
 	if(palette = "00") then 
 		case index is --Default Palette by Rampa
@@ -53,6 +53,7 @@ begin
 			when X"D" => r <= X"a9"; g <= X"ff"; b <= X"9f";
 			when X"E" => r <= X"70"; g <= X"6d"; b <= X"eb";
 			when X"F" => r <= X"b2"; g <= X"b2"; b <= X"b2";
+			when others => r <= X"00"; g <= X"00"; b <= X"00";
 		end case;
 	elsif(palette = "01") then
 		case index is --CePeCe Palette by NeuroRulez
@@ -95,24 +96,25 @@ begin
 			when others => r <= X"00"; g <= X"00"; b <= X"00";
 		end case;	 
 	elsif(palette = "11") then
-		case index is --Comunity Palette by C64 Community Colors
-			when X"0" => r <= X"00"; g <= X"00"; b <= X"00";
-			when X"1" => r <= X"ff"; g <= X"ff"; b <= X"ff";
-			when X"2" => r <= X"af"; g <= X"2a"; b <= X"29";
-			when X"3" => r <= X"62"; g <= X"d8"; b <= X"cc";
-			when X"4" => r <= X"b0"; g <= X"3f"; b <= X"b6";
-			when X"5" => r <= X"4a"; g <= X"c6"; b <= X"4a";
-			when X"6" => r <= X"37"; g <= X"39"; b <= X"c4";
-			when X"7" => r <= X"e4"; g <= X"ed"; b <= X"4e";
-			when X"8" => r <= X"b6"; g <= X"59"; b <= X"1c";
-			when X"9" => r <= X"68"; g <= X"38"; b <= X"08";
-			when X"A" => r <= X"ea"; g <= X"74"; b <= X"6c";
-			when X"B" => r <= X"4d"; g <= X"4d"; b <= X"4d";
-			when X"C" => r <= X"84"; g <= X"84"; b <= X"84";
-			when X"D" => r <= X"a6"; g <= X"fa"; b <= X"9e";
-			when X"E" => r <= X"70"; g <= X"7c"; b <= X"e6";
-			when X"F" => r <= X"b6"; g <= X"b6"; b <= X"b5";
-			when others => r <= X"00"; g <= X"00"; b <= X"00";
+		case index is --Colodore
+		 when X"0" => r <= X"00"; g <= X"00"; b <= X"00";
+		 when X"1" => r <= X"FF"; g <= X"FF"; b <= X"FF";
+		 when X"2" => r <= X"96"; g <= X"28"; b <= X"2E";
+		 when X"3" => r <= X"5B"; g <= X"D6"; b <= X"CE";
+		 when X"4" => r <= X"9F"; g <= X"2D"; b <= X"AD";
+		 when X"5" => r <= X"41"; g <= X"B9"; b <= X"36";
+		 when X"6" => r <= X"27"; g <= X"24"; b <= X"C4";
+		 when X"7" => r <= X"EF"; g <= X"F3"; b <= X"47";
+		 when X"8" => r <= X"9F"; g <= X"48"; b <= X"15";
+		 when X"9" => r <= X"5E"; g <= X"35"; b <= X"00";
+		 when X"A" => r <= X"DA"; g <= X"5F"; b <= X"66";
+		 when X"B" => r <= X"47"; g <= X"47"; b <= X"47";
+		 when X"C" => r <= X"78"; g <= X"78"; b <= X"78";
+		 when X"D" => r <= X"91"; g <= X"FF"; b <= X"84";
+		 when X"E" => r <= X"68"; g <= X"64"; b <= X"FF";
+		 when X"F" => r <= X"AE"; g <= X"AE"; b <= X"AE";
+		 when others => r <= X"00"; g <= X"00"; b <= X"00";
+
 		end case;	 
 	end if;
 	end process;
