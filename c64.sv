@@ -535,8 +535,15 @@ wire mem_ce;
 wire nmi;
 wire reset_crt;
 
+wire cart_oe;
+wire IOF_rd;
+
 wire [24:0] cart_addr;
+wire  [7:0] cart_data;
+
 wire load_cart = (ioctl_index == 5) || (ioctl_index == 'hC0);
+
+
 
 cartridge cartridge
 (
@@ -882,7 +889,6 @@ wire  [7:0] r,g,b;
 
 wire        ntsc = status[2];
 
-wire [31:0] dm_dac;
 
 fpga64_sid_iec fpga64
 (
@@ -920,7 +926,7 @@ fpga64_sid_iec fpga64
 	.iof(IOF),
 	.iof_ext(opl_en),
 	.ioe_ext(1'b0),
-	.io_data(sid2_oe ? (status[16] ? data_8580 : data_6581) : opl_dout),
+	.io_data(opl_dout),
 
 	.joya(joyA_c64 | {1'b0, pd12_mode[1] & paddle_2_btn, pd12_mode[1] & paddle_1_btn, 2'b00} | {pd12_mode[0] & mouse_btn[0], 3'b000, pd12_mode[0] & mouse_btn[1]}),
 	.joyb(joyB_c64 | {1'b0, pd34_mode[1] & paddle_4_btn, pd34_mode[1] & paddle_3_btn, 2'b00} | {pd34_mode[0] & mouse_btn[0], 3'b000, pd34_mode[0] & mouse_btn[1]}),
@@ -937,9 +943,9 @@ fpga64_sid_iec fpga64
 
 	.audio_data_l(audio_l),
 	.audio_data_r(audio_r),
-	.digimax_en(status[23:22]),
 	.sid_mode({status[16],status[13]}),
 	.sid_addr(status[21:20]),
+	.digimax_en(status[23:22]),
 
 	.palette(status[31:30]),
 	.iec_data_o(c64_iec_data),
@@ -1261,6 +1267,7 @@ opl3 #(.OPLCLK(47291931)) opl_inst
 	.sample_l(opl_out)
 );
 
+
 wire [17:0] audio_l;
 wire [17:0] audio_r;
 
@@ -1276,7 +1283,7 @@ end
 
 assign AUDIO_L = alo;
 assign AUDIO_R = aro;
-assign AUDIO_S = 0;
+assign AUDIO_S = 1;
 assign AUDIO_MIX = status[19:18];
 `ifdef CYCLONE
 wire [15:0] AUDIO_L;

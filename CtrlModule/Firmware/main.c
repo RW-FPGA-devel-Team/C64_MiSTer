@@ -117,7 +117,7 @@ static char *testpattern_labels[]=
 
 static char *st_scanlines[]=
 {
-	"Scandoubler Ninguno",
+	"Scandoubler None",
 //	"Scandoubler HQ2x-320",
 //	"Scandoubler HQ2x-160",
 	"Scandoubler CRT 25%",
@@ -133,57 +133,57 @@ static char *st_video[]=
 
 static char *st_videofrm[]=
 {
-	"Aspecto Original",
-	"Aspecto Ancho"
+	"Original aspect ratio",
+	"Wide aspect ratio"
 };
 
 static char *st_videoar[]=
 {
-	"Formato Original",
-	"Formato Pantalla Completa",
-	"Formato [ARC1]",
-	"Formato [ARC2]"
+	"Original format",
+	"Full screen",
+	"Format [ARC1]",
+	"Format [ARC2]"
 };
 
 static char *st_paleta[]=
 {
-	"Paleta C64",
-	"Paleta CePeCeRa",
-	"Paleta Pepto",
-	"Paleta Comunity"
+	"Palette C64",
+	"Palette CePeCeRa",
+	"Palette Pepto",
+	"Palette Comunity"
 };
 
 static char *st_sid_l[]=
 {
-	"SID Izquierdo 6581",
-	"SID Izquierdo 8580"
+	"SID Left 6581",
+	"SID Left 8580"
 };
 
 static char *st_sid_r[]=
 {
-	"SID Derecho 6581",
-	"SID Derecho 8580"
+	"SID Right 6581",
+	"SID Right 8580"
 };
 
 static char *st_sid_addr[]=
 {
-	"SID Derecho Addr Igual",
-	"SID Derecho Addr $D420",
-	"SID Derecho Addr $D500"
+	"SID right Addr Same",
+	"SID right Addr $D420",
+	"SID right Addr $D500"
 };
 
 static char *st_sndexp[]=
 {
-	"Expansion de Sonido No",
-	"Expansion de Sonido OPL2"
+	"Sound expansion No",
+	"Sound expansion OPL2"
 };
 
 static char *st_stereomix[]=
 {
-	"Mezcla Stereo No",
-	"Mezcla Stereo 25%",
-	"Mezcla Stereo 50%",
-	"Mezcla Stereo 100%"
+	"Stereo mix No",
+	"Stereo mix 25%",
+	"Stereo mix 50%",
+	"Stereo mix 100%"
 };
 
 static char *st_dm[]=
@@ -197,47 +197,47 @@ static char *st_dm[]=
 static char *st_joys[]=
 {
 	"Joysticks Normal",
-	"Joysticks Intercambiados"
+	"Joysticks swapped"
 };
 
 static char *st_tapsnd[]=
 {
-	"Sonido Cinta Off",
-	"Sonido Cinta On"
+	"Tape sound Off",
+	"Tape sound On"
 };
 
 static char *st_fdwr[]=
 {
-	"Disco Grabable",
-	"Disco Solo Lectura"
+	"Disk write On",
+	"Disk write Off"
 };
 
 static char *st_port[]=
 {
-	"Puerto UART",
-	"Puerto Joysticks"
+	"Port UART",
+	"Port Joysticks"
 };
 
 static char *st_pot1[]=
 {
-	"Pot 1&2 Joy 1 Disparo 2/3",
-	"Pot 1&2 Raton",
+	"Pot 1&2 Joy 1 Fire 2/3",
+	"Pot 1&2 Mouse",
 	"Pot 1&2 Paddles 1&2"
 };
 
 static char *st_pot2[]=
 {
-	"Pot 3&4 Joy 2 Disparo 2/3",
-	"Pot 3&4 Raton",
+	"Pot 3&4 Joy 2 Fire 2/3",
+	"Pot 3&4 Mouse",
 	"Pot 3&4 Paddles 3&4"
 };
 
 static char *st_kernel[]=
 {
-	"Kernel Cargable",
+	"Kernel loadable",
 	"Kernel C64",
 	"Kernel C64GS",
-	"Kernel Japones"
+	"Kernel Japan"
 };
 
 // Video submenu
@@ -283,16 +283,16 @@ static struct menu_entry topmenu[]=
 	{MENU_ENTRY_CALLBACK,"      NeuroRulez      ",0},
 	{MENU_ENTRY_CALLBACK,"                      ",0},
 	{MENU_ENTRY_CALLBACK,"Reset",MENU_ACTION(&Reset)},	
-	{MENU_ENTRY_CALLBACK,"Reset & Soltar Cartucho",MENU_ACTION(&ResetCrt)},
+	{MENU_ENTRY_CALLBACK,"Reset & Detach cartridge",MENU_ACTION(&ResetCrt)},
 	{MENU_ENTRY_SUBMENU,"Video \x10",MENU_ACTION(vidmenu)},
 	{MENU_ENTRY_SUBMENU,"Audio \x10",MENU_ACTION(audmenu)},
 	{MENU_ENTRY_SUBMENU,"Puertos \x10",MENU_ACTION(prtmenu)},
 	{MENU_ENTRY_CYCLE,(char *)st_kernel,MENU_ACTION(4)},
 	{MENU_ENTRY_CYCLE,(char *)st_tapsnd,MENU_ACTION(2)},
 	{MENU_ENTRY_CYCLE,(char *)st_fdwr,MENU_ACTION(2)},
-	{MENU_ENTRY_CALLBACK,"Sacar Cinta",MENU_ACTION(&UnloadTap)},
-	{MENU_ENTRY_CALLBACK,"Play/Stop Cinta",MENU_ACTION(&Play)},
-	{MENU_ENTRY_CALLBACK,"Cargar Disco/Cinta/Cart \x10",MENU_ACTION(&FileSelector_Show)},
+	{MENU_ENTRY_CALLBACK,"Eject tape",MENU_ACTION(&UnloadTap)},
+	{MENU_ENTRY_CALLBACK,"Play/Stop Tape",MENU_ACTION(&Play)},
+	{MENU_ENTRY_CALLBACK,"Load Disk/Tape/Cart \x10",MENU_ACTION(&FileSelector_Show)},
 	{MENU_ENTRY_CALLBACK,"Exit",MENU_ACTION(&Menu_Hide)},
 	{MENU_ENTRY_NULL,0,0}
 };
@@ -489,10 +489,10 @@ int main(int argc,char **argv)
 
 		dipsw |= (MENU_CYCLE_VALUE(&audmenu[0])  & 0x1) << 13; //13 
 		dipsw |= (MENU_CYCLE_VALUE(&audmenu[1])  & 0x1) << 16; //16 
-		dipsw |= (MENU_CYCLE_VALUE(&audmenu[2])  & 0x3) << 22; //23:22 
+		dipsw |= (MENU_CYCLE_VALUE(&audmenu[2])  & 0x3) << 20; //21:20 
 		dipsw |= (MENU_CYCLE_VALUE(&audmenu[3])  & 0x1) << 12; //12 
 		dipsw |= (MENU_CYCLE_VALUE(&audmenu[4])  & 0x3) << 18; //19:18 
-		dipsw |= (MENU_CYCLE_VALUE(&audmenu[5])  & 0x3) << 20; //21:20
+		dipsw |= (MENU_CYCLE_VALUE(&audmenu[5])  & 0x3) << 22; //23:22
 
 		dipsw |= (MENU_CYCLE_VALUE(&prtmenu[0])  & 0x1) << 3;  //3
 		dipsw |= (MENU_CYCLE_VALUE(&prtmenu[1])  & 0x1) << 1;  //1

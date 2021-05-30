@@ -13,7 +13,7 @@ set_global_assignment -name PARTITION_NETLIST_TYPE SOURCE -section_id Top
 set_global_assignment -name PARTITION_FITTER_PRESERVATION_LEVEL PLACEMENT_AND_ROUTING -section_id Top
 set_global_assignment -name PARTITION_COLOR 16764057 -section_id Top
 
-set_global_assignment -name LAST_QUARTUS_VERSION "17.1.0 Lite Edition"
+set_global_assignment -name LAST_QUARTUS_VERSION "17.0.2 Lite Edition"
 
 set_global_assignment -name NUM_PARALLEL_PROCESSORS ALL
 set_global_assignment -name SAVE_DISK_SPACE OFF
@@ -54,5 +54,56 @@ source Cyclone4_Neptuno/neptuno_sys.qip
 source Cyclone4_Neptuno/neptuno_pin.tcl
 source CtrlModule/CtrlModule.qip
 source files.qip
+set_global_assignment -name SYSTEMVERILOG_FILE rtl/sid/sid_voice.sv
+set_global_assignment -name SYSTEMVERILOG_FILE rtl/sid/sid_top.sv
+set_global_assignment -name SYSTEMVERILOG_FILE rtl/sid/sid_tables.sv
+set_global_assignment -name SYSTEMVERILOG_FILE rtl/sid/sid_filters.sv
+set_global_assignment -name SYSTEMVERILOG_FILE rtl/sid/sid_envelope.sv
+set_global_assignment -name QIP_FILE rtl/sid/sid.qip
+set_global_assignment -name VERILOG_FILE CtrlModule/modules/scandoubler.v
+set_global_assignment -name QIP_FILE Cyclone4_Neptuno/pll/pll.qip
+set_global_assignment -name VHDL_FILE ../CtrlModule/RTL/CtrlModule.vhd
+set_global_assignment -name VHDL_FILE ../CtrlModule/RTL/Debounce.vhd
+set_global_assignment -name VHDL_FILE ../CtrlModule/RTL/dpram.vhd
+set_global_assignment -name VHDL_FILE ../CtrlModule/RTL/interrupt_controller.vhd
+set_global_assignment -name VHDL_FILE ../CtrlModule/RTL/io_ps2_com.vhd
+set_global_assignment -name VHDL_FILE ../CtrlModule/RTL/io_ps2_out.vhd
+set_global_assignment -name VHDL_FILE ../CtrlModule/RTL/OnScreenDisplay.vhd
+set_global_assignment -name VHDL_FILE ../CtrlModule/RTL/OSD_Overlay.vhd
+set_global_assignment -name VHDL_FILE ../CtrlModule/RTL/simple_uart.vhd
+set_global_assignment -name VHDL_FILE ../CtrlModule/RTL/spi.vhd
+set_global_assignment -name VHDL_FILE ../CtrlModule/CharROM/CharROM_ROM.vhd
+set_global_assignment -name VHDL_FILE ../CtrlModule/Firmware/CtrlROM_ROM.vhd
+set_global_assignment -name VHDL_FILE ../CtrlModule/ZPUFlex/zpu_core_flex.vhd
+set_global_assignment -name VHDL_FILE ../CtrlModule/ZPUFlex/zpupkg.vhd
+set_global_assignment -name VERILOG_FILE ../CtrlModule/modules/joydecoder_neptuno.v
+set_global_assignment -name VERILOG_FILE ../CtrlModule/modules/csync.v
+set_global_assignment -name VERILOG_FILE ../CtrlModule/modules/audio/audio_sys.v
+set_global_assignment -name VERILOG_FILE ../CtrlModule/modules/audio/audio_out.v
+set_global_assignment -name VERILOG_FILE ../CtrlModule/modules/audio/i2s.v
+set_global_assignment -name VERILOG_FILE ../CtrlModule/modules/audio/iir_filter.v
+set_global_assignment -name VERILOG_FILE ../CtrlModule/modules/audio/sigma_delta_dac.v
+set_global_assignment -name VERILOG_FILE ../CtrlModule/modules/audio/spdif.v
+set_global_assignment -name SYSTEMVERILOG_FILE ../CtrlModule/modules/image_controller.sv
+set_global_assignment -name QIP_FILE rtl/opl3/opl3.qip
+set_global_assignment -name QIP_FILE rtl/c1541/c1541.qip
+set_global_assignment -name QIP_FILE rtl/t65/t65.qip
+set_global_assignment -name VHDL_FILE rtl/cpu_6510.vhd
+set_global_assignment -name VERILOG_FILE rtl/mos6526.v
+set_global_assignment -name VERILOG_FILE rtl/sdram.v
+set_global_assignment -name VHDL_FILE rtl/dprom.vhd
+set_global_assignment -name VHDL_FILE rtl/spram.vhd
+set_global_assignment -name VERILOG_FILE rtl/cartridge.v
+set_global_assignment -name VHDL_FILE rtl/c1530.vhd
+set_global_assignment -name VERILOG_FILE rtl/c1351.v
+set_global_assignment -name VHDL_FILE rtl/video_sync.vhd
+set_global_assignment -name VHDL_FILE rtl/video_vicII_656x.vhd
+set_global_assignment -name VHDL_FILE rtl/fpga64_rgbcolor.vhd
+set_global_assignment -name VHDL_FILE rtl/fpga64_keyboard.vhd
+set_global_assignment -name VHDL_FILE rtl/fpga64_bustiming.vhd
+set_global_assignment -name VHDL_FILE rtl/fpga64_buslogic.vhd
+set_global_assignment -name VHDL_FILE rtl/fpga64_sid_iec.vhd
+set_global_assignment -name VERILOG_FILE rtl/DigiMax.v
+set_global_assignment -name SYSTEMVERILOG_FILE c64.sv
 set_global_assignment -name CDF_FILE output_files/Chain1.cdf
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

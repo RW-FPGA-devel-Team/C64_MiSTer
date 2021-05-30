@@ -1,4 +1,4 @@
-BASE	= /home/user/zpugcc/toolchain/install/bin/zpu-elf
+BASE	= /opt/zpu/bin/zpu-elf
 CC      = $(BASE)-gcc
 LD      = $(BASE)-gcc
 AS      = $(BASE)-as
@@ -7,14 +7,14 @@ DUMP    = $(BASE)-objdump
 
 
 # A utility to convert binary ROM files into VHDL
-ZPUFLEXDIR = ../../ZPUFlex
+ZPUFLEXDIR = ../ZPUFlex
 ROMGEN = $(ZPUFLEXDIR)/Firmware/zpuromgen
 
 # we use mincrt0.s from here
 STARTUP_DIR = $(ZPUFLEXDIR)/Firmware/startup
 
 # we fetch ROM prologue / epilogue from here
-RTL_DIR = $(ZPUFLEXDIR)/RTL/
+RTL_DIR = ../ZPUFlex/
 
 BUILD_DIR=zpu_obj
 

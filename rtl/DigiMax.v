@@ -3,7 +3,7 @@ module digimax
 	input         clk,
    input         reset_n,
 	input         wr_n,
-	input  [15:0] addr,
+	input   [2:0] addr,
 	input   [7:0] data_in,
 	output  reg [7:0] dac_0,
 	output  reg [7:0] dac_1,
@@ -15,16 +15,12 @@ module digimax
 ////////////////////////////////////////////////////////////////
 
 always @(posedge clk) begin
-   if (!wr_n) begin
+   if (!wr_n && !addr[2]) begin
 	   case (addr)
-			16'hde00: dac_0 <= data_in;
-			16'hde01: dac_1 <= data_in;
-			16'hde02: dac_2 <= data_in;
-			16'hde03: dac_3 <= data_in;
-			16'hdf00: dac_0 <= data_in;
-			16'hdf01: dac_1 <= data_in;
-			16'hdf02: dac_2 <= data_in;
-			16'hdf03: dac_3 <= data_in;
+			3'h0: dac_0 <= data_in;
+			3'h1: dac_1 <= data_in;
+			3'h2: dac_2 <= data_in;
+			3'h3: dac_3 <= data_in;
 	   endcase
 	end
 end
